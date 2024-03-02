@@ -68,22 +68,22 @@ public class RobotContainer {
                 true, true),
             m_robotDrive));
 
-            liftCommand = new LiftCommand(
-                
-                elevatorLift,
-                () -> m_mechanicController.getRawAxis( ControllerConstants.kLeftYAxisPort )
-            
-            );
+    liftCommand = new LiftCommand(
+        
+        elevatorLift,
+        () -> m_mechanicController.getRawAxis( ControllerConstants.kLeftYAxisPort )
+    
+    );
 
-            intakeCommand = new IntakeCommand( 
-                
-                intake,
-                () -> m_mechanicController.getRawAxis( ControllerConstants.kLeftTriggerPort - ControllerConstants.kRightTriggerPort )
-            
-            );
+    intakeCommand = new IntakeCommand( 
+        
+        intake,
+        () -> m_mechanicController.getRawAxis( ControllerConstants.kLeftTriggerPort - ControllerConstants.kRightTriggerPort )
+    
+    );
 
-            elevatorLift.setDefaultCommand(liftCommand);
-            intake.setDefaultCommand(intakeCommand);
+    elevatorLift.setDefaultCommand(liftCommand);
+    intake.setDefaultCommand(intakeCommand);
 
   }
 
