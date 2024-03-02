@@ -62,16 +62,18 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true, true),
-            m_robotDrive));
+            m_robotDrive
+        )
+    );
 
-            liftCommand = new LiftCommand(
-                
-                elevatorLift,
-                () -> m_mechanicController.getRawAxis( ControllerConstants.kLeftYAxisPort )
-            
-            );
+    liftCommand = new LiftCommand(
+        
+        elevatorLift,
+        () -> m_mechanicController.getRawAxis( ControllerConstants.kLeftYAxisPort )
+    
+    );
 
-            elevatorLift.setDefaultCommand(liftCommand);
+    elevatorLift.setDefaultCommand(liftCommand);
 
   }
 
