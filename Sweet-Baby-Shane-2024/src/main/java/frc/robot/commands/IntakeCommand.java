@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ElevatorLift;
 import frc.robot.subsystems.Intake;
 
 public class IntakeCommand extends Command 
@@ -17,15 +18,15 @@ public class IntakeCommand extends Command
     public final int kSpeedAccelerationLimit = 1;
 
     public IntakeCommand(
-        Intake manipulator,
+        Intake intake,
         Supplier<Double> speedSupplier )
     {
-        this.manipulator = manipulator;
+        this.manipulator = intake;
         this.speedSupplier = speedSupplier;
 
         limiter = new SlewRateLimiter(kSpeedAccelerationLimit);
 
-        addRequirements(manipulator);
+        addRequirements(intake);
     }
 
     @Override
