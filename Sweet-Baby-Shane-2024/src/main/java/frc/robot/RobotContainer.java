@@ -16,9 +16,12 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.LiftCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorLift;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -37,6 +40,10 @@ public class RobotContainer {
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController m_mechanicController = new XboxController(OIConstants.kMechanicControllerPort);
+
+    private final ElevatorLift elevatorLift = new ElevatorLift();
+    private final LiftCommand liftCommand;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -56,6 +63,16 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true, true),
             m_robotDrive));
+
+            liftCommand = new LiftCommand(
+                
+                elevatorLift,
+                () -> m_mechanicController.getRawAxis( ControllerConstants.kLeftYAxisPort )
+            
+            );
+
+            elevatorLift.setDefaultCommand(liftCommand);
+
   }
 
   /**
