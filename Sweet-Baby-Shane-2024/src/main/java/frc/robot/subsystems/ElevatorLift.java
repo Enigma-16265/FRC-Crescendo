@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.logging.DataNetworkTableLog;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -10,6 +13,11 @@ import com.revrobotics.RelativeEncoder;
 
 public class ElevatorLift extends SubsystemBase
 {
+
+    private static final DataNetworkTableLog dataLog =
+    new DataNetworkTableLog( 
+        "Subsystems.ElevatorLift",
+        Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
     // Can ID's
     public static final int kElevatorRightCanID = 12;
@@ -42,6 +50,8 @@ public class ElevatorLift extends SubsystemBase
 
     public void lift( double speed )
     {
+
+        dataLog.publish( "speed", speed );
 
         m_elevatorRightSparkMax.set(speed);
 

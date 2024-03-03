@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -67,16 +69,21 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true, true),
             m_robotDrive));
+            
 
     liftCommand = new LiftCommand(
         elevatorLift,
-        () -> m_mechanicController.getRawAxis( ControllerConstants.kLeftYAxisPort )
+        () -> MathUtil.applyDeadband( m_mechanicController.getLeftY(), OIConstants.kElevatorDeadband )
     );
     elevatorLift.setDefaultCommand(liftCommand);
 
     intakeCommand = new IntakeCommand( 
         intake,
-        () -> m_mechanicController.getRawAxis( ControllerConstants.kLeftTriggerPort - ControllerConstants.kRightTriggerPort )
+        () -> {
+          return ( MathUtil.applyDeadband( 
+                    ( m_mechanicController.getLeftTriggerAxis() - m_mechanicController.getRawAxis(5) ) / 2,
+                    OIConstants.kIntakeDeadband ) );
+        }
     );
     intake.setDefaultCommand(intakeCommand);
 
