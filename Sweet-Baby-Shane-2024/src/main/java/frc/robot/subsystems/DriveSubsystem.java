@@ -14,12 +14,32 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.I2C;
+
+import java.util.Map;
+
 import com.kauailabs.navx.frc.AHRS;
+
+import frc.logging.DataNetworkTableLog;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase
+{
+
+  private static final DataNetworkTableLog dataLog =
+    new DataNetworkTableLog( 
+        "subsystems.DriveSubsystem",
+        Map.of( "xSpeed",          DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "ySpeed",          DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "rot",             DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "xSpeedCommanded", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "ySpeedCommanded", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "currentRotation", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "xSpeedDelivered", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "ySpeedDelivered", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "rotDelivered",    DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanId,
@@ -117,7 +137,12 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit)
+  {
+
+    dataLog.publish( "xSpeed", xSpeed );
+    dataLog.publish( "ySpeed", ySpeed );
+    dataLog.publish( "rot",    rot );
     
     double xSpeedCommanded;
     double ySpeedCommanded;
@@ -170,10 +195,18 @@ public class DriveSubsystem extends SubsystemBase {
       m_currentRotation = rot;
     }
 
+    dataLog.publish( "xSpeedCommanded", xSpeedCommanded );
+    dataLog.publish( "ySpeedCommanded", ySpeedCommanded );
+    dataLog.publish( "currentRotation", m_currentRotation );
+
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
+
+    dataLog.publish( "xSpeedDelivered", xSpeedDelivered );
+    dataLog.publish( "ySpeedDelivered", ySpeedDelivered );
+    dataLog.publish( "rotDelivered", rotDelivered );
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative

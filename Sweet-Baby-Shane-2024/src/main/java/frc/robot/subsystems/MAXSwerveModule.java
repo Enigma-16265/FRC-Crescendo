@@ -12,12 +12,19 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkPIDController;
+
+import java.util.Map;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
+import frc.logging.DataNetworkTableLog;
 import frc.robot.Constants.ModuleConstants;
 
-public class MAXSwerveModule {
+public class MAXSwerveModule
+{
+  private final DataNetworkTableLog m_dataLog;
+
   private final CANSparkMax m_drivingSparkMax;
   private final CANSparkMax m_turningSparkMax;
 
@@ -36,7 +43,15 @@ public class MAXSwerveModule {
    * MAXSwerve Module built with NEOs, SPARKS MAX, and a Through Bore
    * Encoder.
    */
-  public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
+  public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset)
+  {
+
+    m_dataLog =
+      new DataNetworkTableLog( 
+        String.format("subsystems.DriveSubsystem_%d_%d", drivingCANId, turningCANId ),
+        Map.of( "desiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "desiredState.speed_mps", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+
     m_drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
     m_turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
 
@@ -140,7 +155,12 @@ public class MAXSwerveModule {
    *
    * @param desiredState Desired state with speed and angle.
    */
-  public void setDesiredState(SwerveModuleState desiredState) {
+  public void setDesiredState(SwerveModuleState desiredState)
+  {
+
+    m_dataLog.publish( "desiredState.angle_deg", desiredState.angle.getDegrees() );
+    m_dataLog.publish( "desiredState.speed_mps", desiredState.speedMetersPerSecond );
+
     // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
