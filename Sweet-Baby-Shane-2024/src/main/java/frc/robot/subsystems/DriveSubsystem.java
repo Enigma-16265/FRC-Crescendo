@@ -29,7 +29,7 @@ public class DriveSubsystem extends SubsystemBase
 
   private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
-        "subsystems.DriveSubsystem",
+        "Subsystems.DriveSubsystem",
         Map.of( "xSpeed",          DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "ySpeed",          DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "rot",             DataNetworkTableLog.COLUMN_TYPE.DOUBLE,

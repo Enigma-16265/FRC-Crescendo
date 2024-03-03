@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
 
     // Can IDs
-    public static final int kIntakeWheelCanID = 1;
-    public static final int kIntakePivotCanID = 2;
+    public static final int kIntakeWheelCanID = 14;
+    public static final int kIntakePivotCanID = 15;
 
     // 2 Motors
     private final CANSparkMax m_intakeWheelSparkMax;

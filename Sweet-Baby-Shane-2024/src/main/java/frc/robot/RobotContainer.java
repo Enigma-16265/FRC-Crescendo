@@ -69,20 +69,15 @@ public class RobotContainer {
             m_robotDrive));
 
     liftCommand = new LiftCommand(
-        
         elevatorLift,
         () -> m_mechanicController.getRawAxis( ControllerConstants.kLeftYAxisPort )
-    
     );
+    elevatorLift.setDefaultCommand(liftCommand);
 
     intakeCommand = new IntakeCommand( 
-        
         intake,
         () -> m_mechanicController.getRawAxis( ControllerConstants.kLeftTriggerPort - ControllerConstants.kRightTriggerPort )
-    
     );
-
-    elevatorLift.setDefaultCommand(liftCommand);
     intake.setDefaultCommand(intakeCommand);
 
   }

@@ -48,7 +48,7 @@ public class MAXSwerveModule
 
     m_dataLog =
       new DataNetworkTableLog( 
-        String.format("subsystems.DriveSubsystem_%d_%d", drivingCANId, turningCANId ),
+        String.format("Subsystems.MAXSwerveModule_%d_%d", drivingCANId, turningCANId ),
         Map.of( "desiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "desiredState.speed_mps", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 

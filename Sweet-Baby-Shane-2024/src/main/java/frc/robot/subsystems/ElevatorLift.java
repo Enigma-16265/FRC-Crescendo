@@ -12,8 +12,8 @@ public class ElevatorLift extends SubsystemBase
 {
 
     // Can ID's
-    public static final int kElevatorRightCanID = 9;
-    public static final int kElevatorLeftCanID = 10;
+    public static final int kElevatorRightCanID = 12;
+    public static final int kElevatorLeftCanID = 13;
 
     // Constants
     public static final double kPositionConversionFactor = 1.0/25.0;

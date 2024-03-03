@@ -53,6 +53,19 @@
       "/FMSInfo": "FMSInfo"
     }
   },
+  "NetworkTables": {
+    "transitory": {
+      "Subsystems": {
+        "open": true
+      },
+      "subsystems": {
+        "DriveSubsystem": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
   "NetworkTables Info": {
     "visible": true
   }
