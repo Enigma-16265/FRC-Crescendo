@@ -84,6 +84,9 @@
         "MAXSwerveModule_8_4": {
           "open": true
         },
+        "Shooter": {
+          "open": true
+        },
         "open": true
       },
       "subsystems": {

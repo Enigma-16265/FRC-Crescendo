@@ -21,11 +21,13 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.FlyWheelCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LiftCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorLift;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -42,14 +44,19 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-  // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-  XboxController m_mechanicController = new XboxController(OIConstants.kMechanicControllerPort);
+    // The driver's controller
+    XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+    XboxController m_mechanicController = new XboxController(OIConstants.kMechanicControllerPort);
 
+    // Subsystems
     private final ElevatorLift elevatorLift = new ElevatorLift();
     private final Intake intake = new Intake();
+    private final Shooter shooter = new Shooter();
+
+    // Commands
     private final LiftCommand liftCommand;
     private final IntakeCommand intakeCommand;
+    private final FlyWheelCommand flyWheelCommand;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -81,11 +88,21 @@ public class RobotContainer {
         intake,
         () -> {
           return ( MathUtil.applyDeadband( 
-                    ( m_mechanicController.getLeftTriggerAxis() - m_mechanicController.getRawAxis(5) ) / 2,
+                    ( m_driverController.getLeftTriggerAxis() - m_driverController.getRawAxis(5) ) / 2,
                     OIConstants.kIntakeDeadband ) );
         }
     );
     intake.setDefaultCommand(intakeCommand);
+
+    flyWheelCommand = new FlyWheelCommand(
+        shooter,
+        () -> {
+          return ( MathUtil.applyDeadband( 
+                    ( m_mechanicController.getLeftTriggerAxis() - m_mechanicController.getRawAxis(5) ) / 2,
+                    OIConstants.kIntakeDeadband ) );
+        }
+    );
+    shooter.setDefaultCommand(flyWheelCommand);
 
   }
 
