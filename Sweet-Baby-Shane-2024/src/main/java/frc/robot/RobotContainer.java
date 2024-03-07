@@ -77,7 +77,6 @@ public class RobotContainer {
                 true, true),
             m_robotDrive));
             
-
     liftCommand = new LiftCommand(
         elevatorLift,
         () -> MathUtil.applyDeadband( m_mechanicController.getLeftY(), OIConstants.kElevatorDeadband )
@@ -88,7 +87,7 @@ public class RobotContainer {
         intake,
         () -> {
           return ( MathUtil.applyDeadband( 
-                    ( m_driverController.getLeftTriggerAxis() - m_driverController.getRawAxis(5) ) / 2,
+                    ( m_driverController.getLeftTriggerAxis() - m_driverController.getRightTriggerAxis() ),
                     OIConstants.kIntakeDeadband ) );
         }
     );
@@ -98,7 +97,7 @@ public class RobotContainer {
         shooter,
         () -> {
           return ( MathUtil.applyDeadband( 
-                    ( m_mechanicController.getLeftTriggerAxis() - m_mechanicController.getRawAxis(5) ) / 2,
+                    ( m_mechanicController.getLeftTriggerAxis() - m_mechanicController.getRightTriggerAxis() ),
                     OIConstants.kIntakeDeadband ) );
         }
     );

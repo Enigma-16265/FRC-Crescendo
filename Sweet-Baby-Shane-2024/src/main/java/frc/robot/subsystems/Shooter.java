@@ -50,12 +50,6 @@ public class Shooter extends SubsystemBase
 
     private final RelativeEncoder m_shooterPivotEncoder;
 
-    // One Feed motor
-    private final CANSparkMax m_shooterFeedSparkMax;
-
-    private final RelativeEncoder m_shooterFeedEncoder;
-
-
     public Shooter()
     {
 
@@ -71,9 +65,6 @@ public class Shooter extends SubsystemBase
         m_shooterPivotSparkMax = new CANSparkMax(kShooterPivotCanID, MotorType.kBrushless);
         m_shooterPivotEncoder = m_shooterPivotSparkMax.getEncoder();
 
-        // Feed
-        m_shooterFeedSparkMax = new CANSparkMax(kShooterFeedCanID, MotorType.kBrushless);
-        m_shooterFeedEncoder = m_shooterFeedSparkMax.getEncoder();
     }
 
     public void spin( double speed )
