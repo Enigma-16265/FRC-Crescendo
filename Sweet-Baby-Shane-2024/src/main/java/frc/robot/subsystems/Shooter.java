@@ -9,6 +9,7 @@ import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.logging.DataNetworkTableLog;
+import frc.robot.Constants.ModuleConstants;
 
 // 4 Motors
 // private final CANSparkMax m_shooterFlywheelOneSparkMax;
@@ -44,11 +45,21 @@ public class Shooter extends SubsystemBase
     private final CANSparkMax m_shooterFlywheelLeftSparkMax;
 
     private final RelativeEncoder m_shooterFlywheelEncoder;
+    private final SparkPIDController m_shooterFlywheelPIdController;
 
     // One Pivot motor
     private final CANSparkMax m_shooterPivotSparkMax;
 
     private final RelativeEncoder m_shooterPivotEncoder;
+
+    // One Feed motor
+    private final CANSparkMax m_shooterFeedSparkMax;
+
+    private final RelativeEncoder m_shooterFeedEncoder;
+
+    private static final double kShooterFlywheelPidControllerP = 1.0;
+    private static final double kShooterFlywheelPidControllerI = 0.0;
+    private static final double kShooterFlywheelPidControllerD = 0.0;
 
     public Shooter()
     {
@@ -61,10 +72,20 @@ public class Shooter extends SubsystemBase
 
         m_shooterFlywheelEncoder = m_shooterFlywheelRightSparkMax.getEncoder();
 
+        m_shooterFlywheelPIdController = m_shooterFlywheelRightSparkMax.getPIDController();
+        m_shooterFlywheelPIdController.setFeedbackDevice(m_shooterFlywheelEncoder);
+
+        m_shooterFlywheelPIdController.setP(kShooterFlywheelPidControllerP);
+        m_shooterFlywheelPIdController.setI(kShooterFlywheelPidControllerI);
+        m_shooterFlywheelPIdController.setD(kShooterFlywheelPidControllerD);
+
         // Pivot
         m_shooterPivotSparkMax = new CANSparkMax(kShooterPivotCanID, MotorType.kBrushless);
         m_shooterPivotEncoder = m_shooterPivotSparkMax.getEncoder();
 
+        // Feed
+        m_shooterFeedSparkMax = new CANSparkMax(kShooterFeedCanID, MotorType.kBrushless);
+        m_shooterFeedEncoder = m_shooterFeedSparkMax.getEncoder();
     }
 
     public void spin( double speed )
