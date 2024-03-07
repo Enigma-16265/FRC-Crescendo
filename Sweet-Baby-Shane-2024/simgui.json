@@ -87,6 +87,9 @@
         "Shooter": {
           "open": true
         },
+        "ShooterPivot": {
+          "open": true
+        },
         "open": true
       },
       "subsystems": {

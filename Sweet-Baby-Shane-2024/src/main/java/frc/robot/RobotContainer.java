@@ -24,10 +24,12 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.FlyWheelCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LiftCommand;
+import frc.robot.commands.PivotCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorLift;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPivot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -52,11 +54,13 @@ public class RobotContainer {
     private final ElevatorLift elevatorLift = new ElevatorLift();
     private final Intake intake = new Intake();
     private final Shooter shooter = new Shooter();
+    private final ShooterPivot shooterPivot = new ShooterPivot();
 
     // Commands
     private final LiftCommand liftCommand;
     private final IntakeCommand intakeCommand;
     private final FlyWheelCommand flyWheelCommand;
+    private final PivotCommand pivotCommand;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -102,6 +106,12 @@ public class RobotContainer {
         }
     );
     shooter.setDefaultCommand(flyWheelCommand);
+
+    pivotCommand = new PivotCommand(
+        shooterPivot,
+        () -> MathUtil.applyDeadband( m_mechanicController.getRawAxis(4), OIConstants.kElevatorDeadband )
+    );
+    shooterPivot.setDefaultCommand( pivotCommand );
 
   }
 

@@ -38,8 +38,6 @@ public class Shooter extends SubsystemBase
     // Can IDs
     public static final int kShooterFlywheelRightCanID = 16;
     public static final int kShooterFlywheelLeftCanID = 17;
-    public static final int kShooterPivotCanID = 18;
-    public static final int kShooterFeedCanID = 19;
 
     private static final double ANGLE_TOLERANCE = 2.0; // degrees
     private static final double maxAngle = 90.0; // maximum angle
@@ -55,11 +53,6 @@ public class Shooter extends SubsystemBase
 
     private final RelativeEncoder m_shooterFlywheelEncoder;
 
-    // One Pivot motor
-    private final CANSparkMax        m_shooterPivotSparkMax;
-    private final RelativeEncoder    m_shooterPivotEncoder;
-    private final SparkPIDController m_shooterPIDController;
-
     public Shooter()
     {
 
@@ -71,21 +64,6 @@ public class Shooter extends SubsystemBase
 
         m_shooterFlywheelEncoder = m_shooterFlywheelRightSparkMax.getEncoder();
 
-        // Pivot
-        m_shooterPivotSparkMax = new CANSparkMax(kShooterPivotCanID, MotorType.kBrushless);
-
-        m_shooterPivotEncoder = m_shooterPivotSparkMax.getEncoder();
-        m_shooterPivotEncoder.setPositionConversionFactor( 1.0 / 36.0 );
-        
-        m_shooterPIDController = m_shooterPivotSparkMax.getPIDController();
-
-        m_shooterPIDController.setFeedbackDevice( m_shooterPivotEncoder );
-
-        m_shooterPIDController.setP(kP);
-        m_shooterPIDController.setI(kI);
-        m_shooterPIDController.setD(kD);
-
-        m_shooterPIDController.setOutputRange(-1.0, 1.0);
     }
 
     public void spin( double speed )
@@ -94,15 +72,6 @@ public class Shooter extends SubsystemBase
         dataLog.publish( "speed", speed );
 
         m_shooterFlywheelRightSparkMax.set(speed);
-
-    }
-
-    public void setTargetAngle(double angle) {
-        // Ensure angle is within limits
-        double targetAngle = Math.max(Math.min(angle, maxAngle), minAngle);
-
-        // Set PID setpoint
-        m_shooterPIDController.setReference(targetAngle * (Math.PI / 180.0), CANSparkMax.ControlType.kPosition);
 
     }
 
