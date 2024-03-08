@@ -21,7 +21,6 @@ public class Intake extends SubsystemBase
 
     // Can IDs
     public static final int kIntakeWheelCanID = 14;
-    public static final int kIntakePivotCanID = 15;
 
     // PID
     private static final double kP = 0.1;
