@@ -4,12 +4,14 @@ import java.util.Map;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.logging.DataNetworkTableLog;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 // import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkPIDController;
 
 public class Elevator extends SubsystemBase
 {
@@ -19,9 +21,20 @@ public class Elevator extends SubsystemBase
         "Subsystems.ElevatorLift",
         Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
-    // Can ID's
+    // Can IDs
     public static final int kElevatorRightCanID = 12;
     public static final int kElevatorLeftCanID = 13;
+
+    // PID
+    private static final double kP = 0.1;
+    private static final double kI = 0.0;
+    private static final double kD = 0.0;
+
+    private static final double SHOOTER_SLEW_RATE_LIMIT = 0.1;
+
+    private final SlewRateLimiter m_slewRateLimiter = new SlewRateLimiter( SHOOTER_SLEW_RATE_LIMIT );
+
+    private double holdPosition = -1.0;
 
     // Constants
     public static final double kPositionConversionFactor = 1.0/25.0;
@@ -33,7 +46,9 @@ public class Elevator extends SubsystemBase
 
     private final RelativeEncoder m_elevatorLiftEncoder;
 
-    // private final SparkPIDController m_elevatorLiftPIDController;
+    private final SparkPIDController m_elevatorPIDController;
+
+    // private final SparkPIDController m_elevatorPIDController;
 
     public Elevator()
     {
@@ -45,6 +60,52 @@ public class Elevator extends SubsystemBase
 
         m_elevatorLiftEncoder = m_elevatorRightSparkMax.getEncoder();
         m_elevatorLiftEncoder.setPositionConversionFactor(kPositionConversionFactor);
+
+        // Wheel
+        
+        m_elevatorPIDController = m_elevatorRightSparkMax.getPIDController();
+
+        m_elevatorPIDController.setFeedbackDevice( m_elevatorLiftEncoder );
+
+        m_elevatorPIDController.setP(kP);
+        m_elevatorPIDController.setI(kI);
+        m_elevatorPIDController.setD(kD);
+
+        m_elevatorPIDController.setOutputRange(-1.0, 1.0);
+
+    }
+
+    public void roll( double desiredSpeed )
+    {
+        dataLog.publish( "desiredSpeed", desiredSpeed );
+
+        if ( desiredSpeed != 0.0 )
+        {
+            double commandedSpeed = m_slewRateLimiter.calculate( desiredSpeed );
+            
+            dataLog.publish( "commandedSpeed", commandedSpeed );
+
+            m_elevatorRightSparkMax.set( commandedSpeed );
+
+            if ( holdPosition >= 0.0 )
+            {
+                holdPosition = -1.0;
+                dataLog.publish( "holdPosition", holdPosition );
+            }
+        }
+        else
+        {
+
+            if ( holdPosition < 0.0 )
+            {
+                holdPosition = m_elevatorLiftEncoder.getPosition();
+                dataLog.publish( "holdPosition", holdPosition );
+            }
+
+            m_elevatorPIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
+        }
+
+
 
     }
 
