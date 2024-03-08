@@ -11,7 +11,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 // import com.revrobotics.SparkPIDController;
 
-public class ElevatorLift extends SubsystemBase
+public class Elevator extends SubsystemBase
 {
 
     private static final DataNetworkTableLog dataLog =
@@ -35,7 +35,7 @@ public class ElevatorLift extends SubsystemBase
 
     // private final SparkPIDController m_elevatorLiftPIDController;
 
-    public ElevatorLift()
+    public Elevator()
     {
         
         m_elevatorRightSparkMax = new CANSparkMax(kElevatorRightCanID, MotorType.kBrushless);

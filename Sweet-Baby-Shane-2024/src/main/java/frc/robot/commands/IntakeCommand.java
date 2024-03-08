@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ElevatorLift;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 
 public class IntakeCommand extends Command 

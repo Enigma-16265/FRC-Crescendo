@@ -26,7 +26,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LiftCommand;
 import frc.robot.commands.PivotCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ElevatorLift;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
@@ -51,7 +51,7 @@ public class RobotContainer {
     XboxController m_mechanicController = new XboxController(OIConstants.kMechanicControllerPort);
 
     // Subsystems
-    private final ElevatorLift elevatorLift = new ElevatorLift();
+    private final Elevator elevatorLift = new Elevator();
     private final Intake intake = new Intake();
     private final Shooter shooter = new Shooter();
     private final ShooterPivot shooterPivot = new ShooterPivot();
