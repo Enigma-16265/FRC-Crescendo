@@ -36,9 +36,8 @@ public class IntakeCommand extends Command
     public void execute()
     {
 
-        double speed = speedSupplier.get();
-
-        manipulator.intake(speed);
+        Double speed = speedSupplier.get();
+        manipulator.roll(speed);
 
     }
 

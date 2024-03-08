@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterPivot;
 
-public class ShooterPivotCommand extends Command
+public class PivotCommand extends Command
 {
     
     private final ShooterPivot            manipulator;
@@ -14,7 +14,7 @@ public class ShooterPivotCommand extends Command
     //Constants
     public final int kSpeedAccelerationLimit = 1;
 
-    public ShooterPivotCommand(
+    public PivotCommand(
         ShooterPivot     manipulator,
         Supplier<Double> speedSupplier )
     {
