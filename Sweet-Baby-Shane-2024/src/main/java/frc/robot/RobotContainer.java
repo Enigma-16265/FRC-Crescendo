@@ -24,7 +24,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.FlyWheelCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakePivotCommand;
-import frc.robot.commands.LiftCommand;
+import frc.robot.commands.ElevatorLiftCommand;
 import frc.robot.commands.ShooterPivotCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -60,7 +60,7 @@ public class RobotContainer {
     private final ShooterPivot shooterPivot = new ShooterPivot();
 
     // Commands
-    private final LiftCommand liftCommand;
+    private final ElevatorLiftCommand liftCommand;
     private final IntakeCommand intakeCommand;
     private final IntakePivotCommand intakePivotCommand;
     private final FlyWheelCommand flyWheelCommand;
@@ -85,7 +85,7 @@ public class RobotContainer {
                 true, true),
             m_robotDrive));
             
-    liftCommand = new LiftCommand(
+    liftCommand = new ElevatorLiftCommand(
         elevatorLift,
         () -> MathUtil.applyDeadband( m_mechanicController.getLeftY(), OIConstants.kElevatorDeadband )
     );
