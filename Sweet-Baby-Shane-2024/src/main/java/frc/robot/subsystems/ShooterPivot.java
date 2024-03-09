@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.CANSparkMax;
@@ -17,32 +17,42 @@ public class ShooterPivot extends SubsystemBase
 {
     
     private static final DataNetworkTableLog dataLog =
-        new DataNetworkTableLog( 
-            "Subsystems.ShooterPivot",
-            Map.of( "desiredSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                    "commandedSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                    "holdPosition", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+    new DataNetworkTableLog( 
+        "Subsystems.ElevatorLift",
+        Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "controlMode", DataNetworkTableLog.COLUMN_TYPE.STRING,
+                "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
 
     // Can IDs
     public static final int kShooterPivotCanID = 18;
-
-    private static final double ANGLE_TOLERANCE = 2.0; // degrees
-    private static final double maxAngle = 90.0; // maximum angle
-    private static final double minAngle = 0.0; // minimum angle
-    private static final double SHOOTER_PIVOT_SLEW_RATE_LIMIT = 0.1;
     
+    // PID
     private static final double kP = 0.1;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
+    // Constants
+    public static final double kPositionConversionFactor = 1.0 / 36.0;
+
+    // Switch Channel
+    public static final int kLimitSwitchChannel = 0;
+
+    // Modes
+    private ControlMode m_controlMode = ControlMode.UNSET;
+    private InputMode   m_inputMode   = InputMode.NOMINAL;
+
     // One Pivot motor
     private final CANSparkMax        m_shooterPivotSparkMax;
+
     private final RelativeEncoder    m_shooterPivotEncoder;
+
     private final SparkPIDController m_shooterPivotPIDController;
 
-    private final SlewRateLimiter    m_slewRateLimiter = new SlewRateLimiter( SHOOTER_PIVOT_SLEW_RATE_LIMIT );
+    private double m_setPointPos = 0.0;
 
-    private double holdPosition = -1.0;
+    // Limit
+    DigitalInput m_limitSwitch = new DigitalInput( kLimitSwitchChannel );
 
     public ShooterPivot()
     {
@@ -51,7 +61,7 @@ public class ShooterPivot extends SubsystemBase
         m_shooterPivotSparkMax = new CANSparkMax(kShooterPivotCanID, MotorType.kBrushless);
 
         m_shooterPivotEncoder = m_shooterPivotSparkMax.getEncoder();
-        m_shooterPivotEncoder.setPositionConversionFactor( 1.0 / 36.0 );
+        m_shooterPivotEncoder.setPositionConversionFactor( kPositionConversionFactor );
         m_shooterPivotEncoder.setPosition( 0.0 );
         
         m_shooterPivotPIDController = m_shooterPivotSparkMax.getPIDController();
@@ -65,34 +75,89 @@ public class ShooterPivot extends SubsystemBase
         m_shooterPivotPIDController.setOutputRange(-1.0, 1.0);
     }
 
-    public void slew( double desiredSpeed )
+    public InputMode getInputMode()
     {
-        dataLog.publish( "desiredSpeed", desiredSpeed );
+        return m_inputMode;
+    }
 
-        if ( desiredSpeed != 0.0 )
+    public void slew( double speed, boolean positiveDirection )
+    {
+        dataLog.publish( "speed", speed );
+
+        if ( ( speed != 0.0 ) && m_limitSwitch.get() )
         {
-            double commandedSpeed = m_slewRateLimiter.calculate( desiredSpeed );
-            
-            dataLog.publish( "commandedSpeed", commandedSpeed );
 
-            m_shooterPivotSparkMax.set( commandedSpeed );
-
-            if ( holdPosition >= 0.0 )
+            if ( m_shooterPivotEncoder.getPosition() <=  2.0 )
             {
-                holdPosition = -1.0;
-                dataLog.publish( "holdPosition", holdPosition );
+                
+                m_inputMode = InputMode.LOWER_LIMIT;
+                if ( !positiveDirection )
+                {
+                    speed = 0.0;
+                }
+
             }
+            else
+            {
+                m_inputMode = InputMode.UPPER_LIMIT;
+                if ( positiveDirection )
+                {
+                    speed = 0.0;
+                }
+            }
+
+        }
+        else
+        {
+            m_inputMode = InputMode.NOMINAL;
+        }
+
+        dataLog.publish( "inputMode", m_inputMode );
+        
+        if ( speed != 0.0 )
+        {
+
+            if ( m_controlMode != ControlMode.ACTIVE )
+            {
+                m_controlMode = ControlMode.ACTIVE;
+                m_setPointPos = 0.0;
+
+                dataLog.publish( "controlMode", m_controlMode );
+                dataLog.publish( "setPointPos", m_setPointPos );
+            }
+
+            m_shooterPivotSparkMax.set( speed );
+
         }
         else
         {
 
-            if ( holdPosition < 0.0 )
+            if ( m_controlMode != ControlMode.HOLD )
             {
-                holdPosition = m_shooterPivotEncoder.getPosition();
-                dataLog.publish( "holdPosition", holdPosition );
+                m_controlMode = ControlMode.HOLD;
+                m_setPointPos = m_shooterPivotEncoder.getPosition();
+
+                dataLog.publish( "controlMode", m_controlMode );
+                dataLog.publish( "setPointPos", m_setPointPos );
             }
 
-            m_shooterPivotPIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
+            m_shooterPivotPIDController.setReference( m_setPointPos, CANSparkMax.ControlType.kPosition );
+        }
+
+    }
+
+    public void home( double speed )
+    {
+        double driveDownSpeed = -1.0 * Math.abs( speed );
+
+        if ( !m_limitSwitch.get() )
+        {
+            m_shooterPivotSparkMax.set( driveDownSpeed );
+        }
+        else
+        {
+            m_shooterPivotEncoder.setPosition( 0.0 );
+            m_inputMode = InputMode.LOWER_LIMIT;
         }
 
     }
