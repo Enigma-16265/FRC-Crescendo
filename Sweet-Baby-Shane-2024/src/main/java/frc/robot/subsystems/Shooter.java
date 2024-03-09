@@ -8,7 +8,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.logging.DataNetworkTableLog;
 import frc.robot.Constants.ModuleConstants;
@@ -34,7 +33,7 @@ public class Shooter extends SubsystemBase
     private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
         "Subsystems.ShooterPivot",
-        Map.of( "desiredSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+        Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "commandedSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "holdPosition", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
@@ -45,7 +44,6 @@ public class Shooter extends SubsystemBase
     private static final double ANGLE_TOLERANCE = 2.0; // degrees
     private static final double maxAngle = 90.0; // maximum angle
     private static final double minAngle = 0.0; // minimum angle
-    private static final double SHOOTER_SLEW_RATE_LIMIT = 0.1;
     
     private static final double kP = 0.1;
     private static final double kI = 0.0;
@@ -56,8 +54,6 @@ public class Shooter extends SubsystemBase
     private final CANSparkMax        m_shooterFlywheelLeftSparkMax;
     private final RelativeEncoder    m_shooterFlywheelEncoder;
     private final SparkPIDController m_shooterFlywheelPIDController;
-
-    private final SlewRateLimiter    m_slewRateLimiter = new SlewRateLimiter( SHOOTER_SLEW_RATE_LIMIT );
 
     private double holdPosition = -1.0;
 
@@ -86,17 +82,14 @@ public class Shooter extends SubsystemBase
 
     }
 
-    public void spin( double desiredSpeed )
+    public void spin( double speed )
     {
-        dataLog.publish( "desiredSpeed", desiredSpeed );
+        dataLog.publish( "speed", speed );
 
-        if ( desiredSpeed != 0.0 )
+        if ( speed != 0.0 )
         {
-            double commandedSpeed = m_slewRateLimiter.calculate( desiredSpeed );
             
-            dataLog.publish( "commandedSpeed", commandedSpeed );
-
-            m_shooterFlywheelRightSparkMax.set( commandedSpeed );
+            m_shooterFlywheelRightSparkMax.set( speed );
 
             if ( holdPosition >= 0.0 )
             {
