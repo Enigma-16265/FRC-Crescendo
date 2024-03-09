@@ -30,9 +30,9 @@ public class Elevator extends SubsystemBase
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
-    private static final double SHOOTER_SLEW_RATE_LIMIT = 0.1;
+    private static final double m_LiftSlewRateLimit = 0.1;
 
-    private final SlewRateLimiter m_slewRateLimiter = new SlewRateLimiter( SHOOTER_SLEW_RATE_LIMIT );
+    private final SlewRateLimiter m_slewRateLimiter = new SlewRateLimiter( m_LiftSlewRateLimit );
 
     private double holdPosition = -1.0;
 
