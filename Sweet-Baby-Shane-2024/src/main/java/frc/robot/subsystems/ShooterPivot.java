@@ -29,7 +29,7 @@ public class ShooterPivot extends SubsystemBase
     private static final double ANGLE_TOLERANCE = 2.0; // degrees
     private static final double maxAngle = 90.0; // maximum angle
     private static final double minAngle = 0.0; // minimum angle
-    private static final double SHOOTER_SLEW_RATE_LIMIT = 0.1;
+    private static final double SHOOTER_PIVOT_SLEW_RATE_LIMIT = 0.1;
     
     private static final double kP = 0.1;
     private static final double kI = 0.0;
@@ -38,9 +38,9 @@ public class ShooterPivot extends SubsystemBase
     // One Pivot motor
     private final CANSparkMax        m_shooterPivotSparkMax;
     private final RelativeEncoder    m_shooterPivotEncoder;
-    private final SparkPIDController m_shooterPIDController;
+    private final SparkPIDController m_shooterPivotPIDController;
 
-    private final SlewRateLimiter    m_slewRateLimiter = new SlewRateLimiter( SHOOTER_SLEW_RATE_LIMIT );
+    private final SlewRateLimiter    m_slewRateLimiter = new SlewRateLimiter( SHOOTER_PIVOT_SLEW_RATE_LIMIT );
 
     private double holdPosition = -1.0;
 
@@ -54,15 +54,15 @@ public class ShooterPivot extends SubsystemBase
         m_shooterPivotEncoder.setPositionConversionFactor( 1.0 / 36.0 );
         m_shooterPivotEncoder.setPosition( 0.0 );
         
-        m_shooterPIDController = m_shooterPivotSparkMax.getPIDController();
+        m_shooterPivotPIDController = m_shooterPivotSparkMax.getPIDController();
 
-        m_shooterPIDController.setFeedbackDevice( m_shooterPivotEncoder );
+        m_shooterPivotPIDController.setFeedbackDevice( m_shooterPivotEncoder );
 
-        m_shooterPIDController.setP(kP);
-        m_shooterPIDController.setI(kI);
-        m_shooterPIDController.setD(kD);
+        m_shooterPivotPIDController.setP(kP);
+        m_shooterPivotPIDController.setI(kI);
+        m_shooterPivotPIDController.setD(kD);
 
-        m_shooterPIDController.setOutputRange(-1.0, 1.0);
+        m_shooterPivotPIDController.setOutputRange(-1.0, 1.0);
     }
 
     public void slew( double desiredSpeed )
@@ -92,7 +92,7 @@ public class ShooterPivot extends SubsystemBase
                 dataLog.publish( "holdPosition", holdPosition );
             }
 
-            m_shooterPIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
+            m_shooterPivotPIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
         }
 
     }

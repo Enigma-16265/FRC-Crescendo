@@ -21,7 +21,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.FlyWheelCommand;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakePivotCommand;
 import frc.robot.commands.ElevatorLiftCommand;
@@ -49,21 +49,21 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
     // The driver's controller
-    XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+    XboxController m_driverController   = new XboxController(OIConstants.kDriverControllerPort);
     XboxController m_mechanicController = new XboxController(OIConstants.kMechanicControllerPort);
 
     // Subsystems
-    private final Elevator elevatorLift = new Elevator();
-    private final Intake intake = new Intake();
-    private final IntakePivot intakePivot = new IntakePivot();
-    private final Shooter shooter = new Shooter();
+    private final Elevator     elevatorLift = new Elevator();
+    private final Intake       intake       = new Intake();
+    private final IntakePivot  intakePivot  = new IntakePivot();
+    private final Shooter      shooter      = new Shooter();
     private final ShooterPivot shooterPivot = new ShooterPivot();
 
     // Commands
     private final ElevatorLiftCommand liftCommand;
-    private final IntakeCommand intakeCommand;
-    private final IntakePivotCommand intakePivotCommand;
-    private final FlyWheelCommand flyWheelCommand;
+    private final IntakeCommand       intakeCommand;
+    private final IntakePivotCommand  intakePivotCommand;
+    private final ShooterCommand      shooterCommand;
     private final ShooterPivotCommand pivotCommand;
 
   /**
@@ -87,7 +87,7 @@ public class RobotContainer {
             
     liftCommand = new ElevatorLiftCommand(
         elevatorLift,
-        () -> MathUtil.applyDeadband( m_mechanicController.getLeftY(), OIConstants.kElevatorDeadband )
+        () -> MathUtil.applyDeadband( -m_mechanicController.getLeftY(), OIConstants.kElevatorDeadband )
     );
     elevatorLift.setDefaultCommand(liftCommand);
 
@@ -110,7 +110,7 @@ public class RobotContainer {
     );
     intakePivot.setDefaultCommand( intakePivotCommand );
 
-    flyWheelCommand = new FlyWheelCommand(
+    shooterCommand = new ShooterCommand(
         shooter,
         () -> {
           return ( MathUtil.applyDeadband( 
@@ -118,7 +118,7 @@ public class RobotContainer {
                     OIConstants.kIntakeDeadband ) );
         }
     );
-    shooter.setDefaultCommand(flyWheelCommand);
+    shooter.setDefaultCommand(shooterCommand);
 
     pivotCommand = new ShooterPivotCommand(
         shooterPivot,

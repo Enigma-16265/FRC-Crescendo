@@ -8,6 +8,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.logging.DataNetworkTableLog;
 import frc.robot.Constants.ModuleConstants;
@@ -31,9 +32,11 @@ import frc.robot.Constants.ModuleConstants;
 public class Shooter extends SubsystemBase
 {
     private static final DataNetworkTableLog dataLog =
-        new DataNetworkTableLog( 
-            "Subsystems.Shooter",
-            Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+    new DataNetworkTableLog( 
+        "Subsystems.ShooterPivot",
+        Map.of( "desiredSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "commandedSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "holdPosition", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
     // Can IDs
     public static final int kShooterFlywheelRightCanID = 16;
@@ -42,16 +45,21 @@ public class Shooter extends SubsystemBase
     private static final double ANGLE_TOLERANCE = 2.0; // degrees
     private static final double maxAngle = 90.0; // maximum angle
     private static final double minAngle = 0.0; // minimum angle
+    private static final double SHOOTER_SLEW_RATE_LIMIT = 0.1;
     
     private static final double kP = 0.1;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
     // Two fly-wheel motors
-    private final CANSparkMax m_shooterFlywheelRightSparkMax;
-    private final CANSparkMax m_shooterFlywheelLeftSparkMax;
+    private final CANSparkMax        m_shooterFlywheelRightSparkMax;
+    private final CANSparkMax        m_shooterFlywheelLeftSparkMax;
+    private final RelativeEncoder    m_shooterFlywheelEncoder;
+    private final SparkPIDController m_shooterFlywheelPIDController;
 
-    private final RelativeEncoder m_shooterFlywheelEncoder;
+    private final SlewRateLimiter    m_slewRateLimiter = new SlewRateLimiter( SHOOTER_SLEW_RATE_LIMIT );
+
+    private double holdPosition = -1.0;
 
     public Shooter()
     {
@@ -63,15 +71,50 @@ public class Shooter extends SubsystemBase
         m_shooterFlywheelLeftSparkMax.follow(m_shooterFlywheelRightSparkMax, true);
 
         m_shooterFlywheelEncoder = m_shooterFlywheelRightSparkMax.getEncoder();
+        m_shooterFlywheelEncoder.setPositionConversionFactor( 1.0 / 36.0 );
+        m_shooterFlywheelEncoder.setPosition( 0.0 );
+        
+        m_shooterFlywheelPIDController = m_shooterFlywheelRightSparkMax.getPIDController();
+
+        m_shooterFlywheelPIDController.setFeedbackDevice( m_shooterFlywheelEncoder );
+
+        m_shooterFlywheelPIDController.setP(kP);
+        m_shooterFlywheelPIDController.setI(kI);
+        m_shooterFlywheelPIDController.setD(kD);
+
+        m_shooterFlywheelPIDController.setOutputRange(-1.0, 1.0);
 
     }
 
-    public void spin( double speed )
+    public void spin( double desiredSpeed )
     {
+        dataLog.publish( "desiredSpeed", desiredSpeed );
 
-        dataLog.publish( "speed", speed );
+        if ( desiredSpeed != 0.0 )
+        {
+            double commandedSpeed = m_slewRateLimiter.calculate( desiredSpeed );
+            
+            dataLog.publish( "commandedSpeed", commandedSpeed );
 
-        m_shooterFlywheelRightSparkMax.set(speed);
+            m_shooterFlywheelRightSparkMax.set( commandedSpeed );
+
+            if ( holdPosition >= 0.0 )
+            {
+                holdPosition = -1.0;
+                dataLog.publish( "holdPosition", holdPosition );
+            }
+        }
+        else
+        {
+
+            if ( holdPosition < 0.0 )
+            {
+                holdPosition = m_shooterFlywheelEncoder.getPosition();
+                dataLog.publish( "holdPosition", holdPosition );
+            }
+
+            m_shooterFlywheelPIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
+        }
 
     }
 
