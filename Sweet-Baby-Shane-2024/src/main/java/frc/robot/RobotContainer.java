@@ -23,6 +23,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeHomingCommand;
 import frc.robot.commands.IntakePivotCommand;
 import frc.robot.commands.ElevatorLiftCommand;
 import frc.robot.commands.ElevatorHomingCommand;
@@ -216,6 +217,9 @@ public class RobotContainer {
   {
       Command elevatorHomingCommand = new ElevatorHomingCommand( elevator );
       elevatorHomingCommand.schedule();
+
+      Command intakeHomingCommand = new IntakeHomingCommand( intakePivot );
+      intakeHomingCommand.schedule();
   }
 
 }
