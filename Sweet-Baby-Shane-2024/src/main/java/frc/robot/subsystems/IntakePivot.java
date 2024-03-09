@@ -7,7 +7,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.logging.DataNetworkTableLog;
 
@@ -16,27 +16,47 @@ public class IntakePivot extends SubsystemBase
     private static final DataNetworkTableLog dataLog =
         new DataNetworkTableLog( 
             "Subsystems.IntakePivot",
-            Map.of( "desiredSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                    "commandedSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                    "holdPosition", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+            Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                    "controlMode", DataNetworkTableLog.COLUMN_TYPE.STRING,
+                    "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                    "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
+
+    public enum ControlMode
+    {
+        UNSET,
+        ACTIVE,
+        HOLD
+    }
+                
+    public enum InputMode
+    {
+        NOMINAL,
+        UPPER_LIMIT,
+        LOWER_LIMIT
+    }
 
     // Can IDs
     public static final int kIntakePivotCanID = 15;
-
-    private static final double SHOOTER_SLEW_RATE_LIMIT = 0.1;
 
     private static final double kP = 0.1;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
-    // 1 Motors
+    // Switch Channel
+    public static final int kLimitSwitchChannel = 2;
+
+    private ControlMode m_controlMode = ControlMode.UNSET;
+    private InputMode   m_inputMode   = InputMode.NOMINAL;
+
+    // Motor
     private final CANSparkMax        m_intakePivotSparkMax;
     private final RelativeEncoder    m_intakePivotEncoder;
     private final SparkPIDController m_intakePIDController;
 
-    private final SlewRateLimiter    m_slewRateLimiter = new SlewRateLimiter( SHOOTER_SLEW_RATE_LIMIT );
+    // Limit Switch
+    DigitalInput m_limitSwitch = new DigitalInput( kLimitSwitchChannel );
 
-    private double holdPosition = -1.0;
+    private double m_setPointPos = 0.0;
 
     public IntakePivot()
     {
@@ -58,34 +78,89 @@ public class IntakePivot extends SubsystemBase
         m_intakePIDController.setOutputRange(-1.0, 1.0);
     }
 
-    public void slew( double desiredSpeed )
+    public InputMode getInputMode()
     {
-        dataLog.publish( "desiredSpeed", desiredSpeed );
+        return m_inputMode;
+    }
 
-        if ( desiredSpeed != 0.0 )
+    public void slew( double speed, boolean positiveDirection )
+    {
+        dataLog.publish( "speed", speed );
+
+        if ( ( speed != 0.0 ) && m_limitSwitch.get() )
         {
-            double commandedSpeed = m_slewRateLimiter.calculate( desiredSpeed );
-            
-            dataLog.publish( "commandedSpeed", commandedSpeed );
 
-            m_intakePivotSparkMax.set( commandedSpeed );
-
-            if ( holdPosition >= 0.0 )
+            if ( m_intakePivotEncoder.getPosition() <=  2.0 )
             {
-                holdPosition = -1.0;
-                dataLog.publish( "holdPosition", holdPosition );
+                
+                m_inputMode = InputMode.LOWER_LIMIT;
+                if ( !positiveDirection )
+                {
+                    speed = 0.0;
+                }
+
             }
+            else
+            {
+                m_inputMode = InputMode.UPPER_LIMIT;
+                if ( positiveDirection )
+                {
+                    speed = 0.0;
+                }
+            }
+
+        }
+        else
+        {
+            m_inputMode = InputMode.NOMINAL;
+        }
+
+        dataLog.publish( "inputMode", m_inputMode );
+        
+        if ( speed != 0.0 )
+        {
+
+            if ( m_controlMode != ControlMode.ACTIVE )
+            {
+                m_controlMode = ControlMode.ACTIVE;
+                m_setPointPos = 0.0;
+
+                dataLog.publish( "controlMode", m_controlMode );
+                dataLog.publish( "setPointPos", m_setPointPos );
+            }
+
+            m_intakePivotSparkMax.set( speed );
+
         }
         else
         {
 
-            if ( holdPosition < 0.0 )
+            if ( m_controlMode != ControlMode.HOLD )
             {
-                holdPosition = m_intakePivotEncoder.getPosition();
-                dataLog.publish( "holdPosition", holdPosition );
+                m_controlMode = ControlMode.HOLD;
+                m_setPointPos = m_intakePivotEncoder.getPosition();
+
+                dataLog.publish( "controlMode", m_controlMode );
+                dataLog.publish( "setPointPos", m_setPointPos );
             }
 
-            m_intakePIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
+            m_intakePIDController.setReference( m_setPointPos, CANSparkMax.ControlType.kPosition );
+        }
+
+    }
+
+    public void home( double speed )
+    {
+        double driveDownSpeed = -1.0 * Math.abs( speed );
+
+        if ( !m_limitSwitch.get() )
+        {
+            m_intakePivotSparkMax.set( driveDownSpeed );
+        }
+        else
+        {
+            m_intakePivotEncoder.setPosition( 0.0 );
+            m_inputMode = InputMode.LOWER_LIMIT;
         }
 
     }
