@@ -2,16 +2,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.InputMode;
 
 public class ElevatorHomingCommand extends Command
 {
 
+    //Constants
     private static final double kDriveDownSpeed = -0.1;
 
     private final Elevator m_elevator;
-
-    //Constants
-    public final int kSpeedAccelerationLimit = 1;
 
     public ElevatorHomingCommand( Elevator elevator )
     {
@@ -25,7 +24,7 @@ public class ElevatorHomingCommand extends Command
     @Override
     public void execute()
     {
-        System.out.println( "!!!!!!!!!!!!!!!! DID THIS RUN! !!!!!!!!!!!!!!!" );
+        System.out.println( "ElevatorHomingCommand execute!!!!!!!!!!!!!" );
         m_elevator.home( kDriveDownSpeed );
     }
 
@@ -34,7 +33,7 @@ public class ElevatorHomingCommand extends Command
 
     @Override
     public boolean isFinished() {
-        return ( m_elevator.getInputMode() == Elevator.InputMode.LOWER_LIMIT );
+        return ( m_elevator.getInputMode() == InputMode.LOWER_LIMIT );
     }
 
 }

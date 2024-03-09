@@ -4,7 +4,6 @@ import java.util.Map;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.logging.DataNetworkTableLog;
@@ -24,21 +23,7 @@ public class Elevator extends SubsystemBase
                 "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
 
-    public enum ControlMode
-    {
-        UNSET,
-        ACTIVE,
-        HOLD
-    }
-
-    public enum InputMode
-    {
-        NOMINAL,
-        UPPER_LIMIT,
-        LOWER_LIMIT
-    }
-
-    // Can IDs
+    // Can ID
     public static final int kElevatorRightCanID = 12;
     public static final int kElevatorLeftCanID = 13;
 
@@ -52,13 +37,11 @@ public class Elevator extends SubsystemBase
     public static final double kPullyDiamaterM = 38.82/1000;
 
     // Switch Channel
-    public static final int kUpperLimitSwitchChannel = 0;
-    public static final int kLowerLimitSwitchChannel = 1;
+    public static final int kLimitSwitchChannel = 0;
 
+    // Modes
     private ControlMode m_controlMode = ControlMode.UNSET;
-    private double m_setPointPos = 0.0;
-
-    private InputMode m_inputMode = InputMode.NOMINAL;
+    private InputMode   m_inputMode   = InputMode.NOMINAL;
     
     // Two Motors
     private final CANSparkMax m_elevatorRightSparkMax;
@@ -68,8 +51,10 @@ public class Elevator extends SubsystemBase
 
     private final SparkPIDController m_elevatorPIDController;
 
-    // Limit Switches
-    DigitalInput m_limitSwitch = new DigitalInput( kUpperLimitSwitchChannel );
+    private double m_setPointPos = 0.0;
+
+    // Limit
+    DigitalInput m_limitSwitch = new DigitalInput( kLimitSwitchChannel );
 
     public Elevator()
     {
