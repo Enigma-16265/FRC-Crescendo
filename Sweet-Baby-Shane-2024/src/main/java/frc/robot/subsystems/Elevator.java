@@ -48,8 +48,6 @@ public class Elevator extends SubsystemBase
 
     private final SparkPIDController m_elevatorPIDController;
 
-    // private final SparkPIDController m_elevatorPIDController;
-
     public Elevator()
     {
         
@@ -60,8 +58,6 @@ public class Elevator extends SubsystemBase
 
         m_elevatorLiftEncoder = m_elevatorRightSparkMax.getEncoder();
         m_elevatorLiftEncoder.setPositionConversionFactor(kPositionConversionFactor);
-
-        // Wheel
         
         m_elevatorPIDController = m_elevatorRightSparkMax.getPIDController();
 
@@ -75,7 +71,7 @@ public class Elevator extends SubsystemBase
 
     }
 
-    public void roll( double desiredSpeed )
+    public void lift( double desiredSpeed )
     {
         dataLog.publish( "desiredSpeed", desiredSpeed );
 
@@ -104,17 +100,6 @@ public class Elevator extends SubsystemBase
 
             m_elevatorPIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
         }
-
-
-
-    }
-
-    public void lift( double speed )
-    {
-
-        dataLog.publish( "speed", speed );
-
-        m_elevatorRightSparkMax.set(speed);
 
     }
 
