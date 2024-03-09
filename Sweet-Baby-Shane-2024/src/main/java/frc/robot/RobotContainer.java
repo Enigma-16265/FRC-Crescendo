@@ -114,9 +114,30 @@ public class RobotContainer {
     shooterCommand = new ShooterCommand(
         shooter,
         () -> {
-          return ( MathUtil.applyDeadband( 
-                    ( m_mechanicController.getLeftTriggerAxis() - m_mechanicController.getRightTriggerAxis() ),
-                    OIConstants.kIntakeDeadband ) );
+
+          double speed = 0.0;
+
+          if (m_mechanicController.getYButtonPressed() )
+          {
+
+            speed = 0.5;
+
+          }
+          else if ( m_mechanicController.getXButtonPressed() )
+          {
+            
+            speed = 0.1;
+
+          }
+          else if ( m_mechanicController.getAButtonPressed() )
+          {
+
+            speed = -0.1;
+
+          }
+
+          return speed;
+
         }
     );
     shooter.setDefaultCommand(shooterCommand);
