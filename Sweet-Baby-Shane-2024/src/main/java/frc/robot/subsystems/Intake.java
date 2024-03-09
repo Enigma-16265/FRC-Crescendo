@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.logging.DataNetworkTableLog;
 
@@ -17,7 +16,8 @@ public class Intake extends SubsystemBase
     private static final DataNetworkTableLog dataLog =
         new DataNetworkTableLog( 
             "Subsystems.Intake",
-            Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+            Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                    "holdPosition", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
     // Can IDs
     public static final int kIntakeWheelCanID = 14;
@@ -27,14 +27,10 @@ public class Intake extends SubsystemBase
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
-    private static final double SHOOTER_SLEW_RATE_LIMIT = 0.1;
-
     // Roll Motor
     private final CANSparkMax m_intakeWheelSparkMax;
     private final RelativeEncoder m_intakeWheelEncoder;
     private final SparkPIDController m_intakePIDController;
-
-    private final SlewRateLimiter m_slewRateLimiter = new SlewRateLimiter( SHOOTER_SLEW_RATE_LIMIT );
 
     private double holdPosition = -1.0;
 
@@ -60,17 +56,14 @@ public class Intake extends SubsystemBase
 
     }
 
-    public void roll( double desiredSpeed )
+    public void roll( double speed )
     {
-        dataLog.publish( "desiredSpeed", desiredSpeed );
+        dataLog.publish( "speed", speed );
 
-        if ( desiredSpeed != 0.0 )
+        if ( speed != 0.0 )
         {
-            double commandedSpeed = m_slewRateLimiter.calculate( desiredSpeed );
             
-            dataLog.publish( "commandedSpeed", commandedSpeed );
-
-            m_intakeWheelSparkMax.set( commandedSpeed );
+            m_intakeWheelSparkMax.set( speed );
 
             if ( holdPosition >= 0.0 )
             {
