@@ -25,6 +25,7 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakePivotCommand;
 import frc.robot.commands.ElevatorLiftCommand;
+import frc.robot.commands.ElevatorHomingCommand;
 import frc.robot.commands.ShooterPivotCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -53,7 +54,7 @@ public class RobotContainer {
     XboxController m_mechanicController = new XboxController(OIConstants.kMechanicControllerPort);
 
     // Subsystems
-    private final Elevator     elevatorLift = new Elevator();
+    private final Elevator     elevator     = new Elevator();
     private final Intake       intake       = new Intake();
     private final IntakePivot  intakePivot  = new IntakePivot();
     private final Shooter      shooter      = new Shooter();
@@ -86,10 +87,10 @@ public class RobotContainer {
             m_robotDrive));
             
     liftCommand = new ElevatorLiftCommand(
-        elevatorLift,
+        elevator,
         () -> MathUtil.applyDeadband( -m_mechanicController.getLeftY(), OIConstants.kElevatorDeadband )
     );
-    elevatorLift.setDefaultCommand(liftCommand);
+    elevator.setDefaultCommand(liftCommand);
 
     intakeCommand = new IntakeCommand( 
         intake,
@@ -189,4 +190,11 @@ public class RobotContainer {
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
   }
+
+  void teleopInit()
+  {
+      Command elevatorHomingCommand = new ElevatorHomingCommand( elevator );
+      elevatorHomingCommand.schedule();
+  }
+
 }

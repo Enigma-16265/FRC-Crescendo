@@ -19,20 +19,19 @@ public class Elevator extends SubsystemBase
     private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
         "Subsystems.ElevatorLift",
-        Map.of( "desiredSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+        Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "controlMode", DataNetworkTableLog.COLUMN_TYPE.STRING,
-                "commandedSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
 
-    enum ControlMode
+    public enum ControlMode
     {
         UNSET,
         ACTIVE,
         HOLD
     }
 
-    enum InputMode
+    public enum InputMode
     {
         NOMINAL,
         UPPER_LIMIT,
@@ -48,8 +47,6 @@ public class Elevator extends SubsystemBase
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
-    private static final double m_LiftSlewRateLimit = 0.1;
-
     // Constants
     public static final double kPositionConversionFactor = 1.0/25.0;
     public static final double kPullyDiamaterM = 38.82/1000;
@@ -58,10 +55,10 @@ public class Elevator extends SubsystemBase
     public static final int kUpperLimitSwitchChannel = 0;
     public static final int kLowerLimitSwitchChannel = 1;
 
-    private ControlMode controlMode = ControlMode.UNSET;
-    private double setPointPos = 0.0;
+    private ControlMode m_controlMode = ControlMode.UNSET;
+    private double m_setPointPos = 0.0;
 
-    private InputMode inputMode = InputMode.NOMINAL;
+    private InputMode m_inputMode = InputMode.NOMINAL;
     
     // Two Motors
     private final CANSparkMax m_elevatorRightSparkMax;
@@ -70,8 +67,6 @@ public class Elevator extends SubsystemBase
     private final RelativeEncoder m_elevatorLiftEncoder;
 
     private final SparkPIDController m_elevatorPIDController;
-
-    private final SlewRateLimiter m_slewRateLimiter = new SlewRateLimiter( m_LiftSlewRateLimit );
 
     // Limit Switches
     DigitalInput m_upperlimitSwitch = new DigitalInput( kUpperLimitSwitchChannel );
@@ -100,59 +95,60 @@ public class Elevator extends SubsystemBase
 
     }
 
-    public void lift( double desiredSpeed )
+    public InputMode getInputMode()
     {
-        dataLog.publish( "desiredSpeed", desiredSpeed );
+        return m_inputMode;
+    }
 
-        if ( ( desiredSpeed > 0.0 ) && m_upperlimitSwitch.get() )
+    public void lift( double speed )
+    {
+        dataLog.publish( "speed", speed );
+
+        if ( ( speed > 0.0 ) && m_upperlimitSwitch.get() )
         {
-            desiredSpeed = 0.0;
-            inputMode = InputMode.UPPER_LIMIT;
+            speed = 0.0;
+            m_inputMode = InputMode.UPPER_LIMIT;
         } 
-        else if ( ( desiredSpeed < 0.0 ) && m_lowerlimitSwitch.get() )
+        else if ( ( speed < 0.0 ) && m_lowerlimitSwitch.get() )
         {
-            desiredSpeed = 0.0;
-            inputMode = InputMode.LOWER_LIMIT;
+            speed = 0.0;
+            m_inputMode = InputMode.LOWER_LIMIT;
         }
         else
         {
-            inputMode = InputMode.NOMINAL;
+            m_inputMode = InputMode.NOMINAL;
         }
 
-        dataLog.publish( "inputMode", inputMode );
+        dataLog.publish( "inputMode", m_inputMode );
         
-        if ( desiredSpeed != 0.0 )
+        if ( speed != 0.0 )
         {
 
-            if ( controlMode != ControlMode.ACTIVE )
+            if ( m_controlMode != ControlMode.ACTIVE )
             {
-                controlMode = ControlMode.ACTIVE;
-                setPointPos = 0.0;
+                m_controlMode = ControlMode.ACTIVE;
+                m_setPointPos = 0.0;
 
-                dataLog.publish( "controlMode", controlMode );
-                dataLog.publish( "setPointPos", setPointPos );
+                dataLog.publish( "controlMode", m_controlMode );
+                dataLog.publish( "setPointPos", m_setPointPos );
             }
 
-            double commandedSpeed = m_slewRateLimiter.calculate( desiredSpeed );
-            
-            dataLog.publish( "commandedSpeed", commandedSpeed );
-
-            m_elevatorRightSparkMax.set( commandedSpeed );
+            m_elevatorRightSparkMax.set( speed );
 
         }
         else
         {
 
-            if ( controlMode != ControlMode.HOLD )
+            if ( m_controlMode != ControlMode.HOLD )
             {
-                controlMode = ControlMode.HOLD;
-                setPointPos = 36;//m_elevatorLiftEncoder.getPosition();
+                m_controlMode = ControlMode.HOLD;
+                m_setPointPos = m_elevatorLiftEncoder.getPosition();
 
-                dataLog.publish( "controlMode", controlMode );
-                dataLog.publish( "setPointPos", setPointPos );
+                dataLog.publish( "controlMode", m_controlMode );
+                dataLog.publish( "setPointPos", m_setPointPos );
             }
 
-            m_elevatorPIDController.setReference( setPointPos, CANSparkMax.ControlType.kPosition );
+            m_elevatorPIDController.setReference( m_setPointPos, CANSparkMax.ControlType.kPosition );
         }
 
     }

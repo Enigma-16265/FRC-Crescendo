@@ -9,24 +9,23 @@ import frc.robot.subsystems.Elevator;
 
 public class ElevatorLiftCommand extends Command
 {
+    private static final double kLiftSlewRateLimit = 0.1;
 
-    private final Elevator            manipulator;
-    private final Supplier<Double>        speedSupplier;
-    private final SlewRateLimiter         limiter;
+    private final Elevator          m_elevator;
+    private final Supplier<Double>  m_speedSupplier;
+    private final SlewRateLimiter   m_slewRateLimiter = new SlewRateLimiter( kLiftSlewRateLimit );
 
     //Constants
     public final int kSpeedAccelerationLimit = 1;
 
     public ElevatorLiftCommand(
-        Elevator     manipulator,
+        Elevator         elevator,
         Supplier<Double> speedSupplier )
     {
-        this.manipulator   = manipulator;
-        this.speedSupplier = speedSupplier;
-        
-        limiter = new SlewRateLimiter( kSpeedAccelerationLimit );
+        this.m_elevator   = elevator;
+        this.m_speedSupplier = speedSupplier;
 
-        addRequirements( manipulator );
+        addRequirements( elevator );
     }
 
     @Override
@@ -36,9 +35,14 @@ public class ElevatorLiftCommand extends Command
     public void execute()
     {
 
-        double speed = speedSupplier.get();
+        double requestSpeed = m_speedSupplier.get();
+        if ( requestSpeed == 0.0 )
+        {
+            m_slewRateLimiter.reset( 0.0 );
+        }
 
-        manipulator.lift(speed);
+        double commandSpeed = m_slewRateLimiter.calculate( requestSpeed );
+        m_elevator.lift( commandSpeed );
 
     }
 
