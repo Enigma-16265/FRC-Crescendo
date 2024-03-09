@@ -21,20 +21,6 @@ public class IntakePivot extends SubsystemBase
                     "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                     "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
 
-    public enum ControlMode
-    {
-        UNSET,
-        ACTIVE,
-        HOLD
-    }
-                
-    public enum InputMode
-    {
-        NOMINAL,
-        UPPER_LIMIT,
-        LOWER_LIMIT
-    }
-
     // Can IDs
     public static final int kIntakePivotCanID = 15;
 

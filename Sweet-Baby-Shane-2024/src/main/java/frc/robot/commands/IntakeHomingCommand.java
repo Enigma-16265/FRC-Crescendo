@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakePivot;
+import frc.robot.subsystems.InputMode;
 
 public class IntakeHomingCommand extends Command
 {
@@ -22,7 +23,7 @@ public class IntakeHomingCommand extends Command
     @Override
     public void execute()
     {
-        System.out.println( "IntakeHomingCommand execute!!!!!!!!!!!!!!!" );
+        System.out.println( "IntakeHomingCommand execute!!!!!!!!!!!!!" );
         m_intake.home( kDriveDownSpeed );
     }
 
@@ -31,7 +32,7 @@ public class IntakeHomingCommand extends Command
 
     @Override
     public boolean isFinished() {
-        return ( m_intake.getInputMode() == IntakePivot.InputMode.LOWER_LIMIT );
+        return ( m_intake.getInputMode() == InputMode.LOWER_LIMIT );
     }
 
 }
