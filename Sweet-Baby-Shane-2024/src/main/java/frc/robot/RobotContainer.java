@@ -117,19 +117,19 @@ public class RobotContainer {
 
           double speed = 0.0;
 
-          if (m_mechanicController.getYButtonPressed() )
+          if (m_mechanicController.getYButton() )
           {
 
             speed = 0.5;
 
           }
-          else if ( m_mechanicController.getXButtonPressed() )
+          else if ( m_mechanicController.getXButton() )
           {
             
             speed = 0.1;
 
           }
-          else if ( m_mechanicController.getAButtonPressed() )
+          else if ( m_mechanicController.getAButton() )
           {
 
             speed = -0.1;

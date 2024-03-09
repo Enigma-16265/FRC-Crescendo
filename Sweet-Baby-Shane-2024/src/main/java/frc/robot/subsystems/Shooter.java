@@ -32,9 +32,8 @@ public class Shooter extends SubsystemBase
 {
     private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
-        "Subsystems.ShooterPivot",
+        "Subsystems.Shooter",
         Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "commandedSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "holdPosition", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
     // Can IDs
