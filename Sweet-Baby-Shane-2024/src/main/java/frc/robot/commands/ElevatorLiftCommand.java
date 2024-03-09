@@ -41,8 +41,14 @@ public class ElevatorLiftCommand extends Command
             m_slewRateLimiter.reset( 0.0 );
         }
 
+        boolean positiveDirection = false;
+        if ( requestSpeed > 0.0 )
+        {
+            positiveDirection = true;
+        }
+
         double commandSpeed = m_slewRateLimiter.calculate( requestSpeed );
-        m_elevator.lift( commandSpeed );
+        m_elevator.lift( commandSpeed, positiveDirection );
 
     }
 

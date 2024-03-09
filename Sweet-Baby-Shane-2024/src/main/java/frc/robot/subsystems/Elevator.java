@@ -69,8 +69,7 @@ public class Elevator extends SubsystemBase
     private final SparkPIDController m_elevatorPIDController;
 
     // Limit Switches
-    DigitalInput m_upperlimitSwitch = new DigitalInput( kUpperLimitSwitchChannel );
-    DigitalInput m_lowerlimitSwitch = new DigitalInput( kLowerLimitSwitchChannel );
+    DigitalInput m_limitSwitch = new DigitalInput( kUpperLimitSwitchChannel );
 
     public Elevator()
     {
@@ -82,6 +81,7 @@ public class Elevator extends SubsystemBase
 
         m_elevatorLiftEncoder = m_elevatorRightSparkMax.getEncoder();
         m_elevatorLiftEncoder.setPositionConversionFactor(kPositionConversionFactor);
+        m_elevatorLiftEncoder.setPosition( 0.0 );
         
         m_elevatorPIDController = m_elevatorRightSparkMax.getPIDController();
 
@@ -100,19 +100,32 @@ public class Elevator extends SubsystemBase
         return m_inputMode;
     }
 
-    public void lift( double speed )
+    public void lift( double speed, boolean positiveDirection )
     {
         dataLog.publish( "speed", speed );
 
-        if ( ( speed > 0.0 ) && m_upperlimitSwitch.get() )
+        if ( ( speed != 0.0 ) && m_limitSwitch.get() )
         {
-            speed = 0.0;
-            m_inputMode = InputMode.UPPER_LIMIT;
-        } 
-        else if ( ( speed < 0.0 ) && m_lowerlimitSwitch.get() )
-        {
-            speed = 0.0;
-            m_inputMode = InputMode.LOWER_LIMIT;
+
+            if ( m_elevatorLiftEncoder.getPosition() <=  2.0 )
+            {
+                
+                m_inputMode = InputMode.LOWER_LIMIT;
+                if ( !positiveDirection )
+                {
+                    speed = 0.0;
+                }
+
+            }
+            else
+            {
+                m_inputMode = InputMode.UPPER_LIMIT;
+                if ( positiveDirection )
+                {
+                    speed = 0.0;
+                }
+            }
+
         }
         else
         {
@@ -149,6 +162,22 @@ public class Elevator extends SubsystemBase
             }
 
             m_elevatorPIDController.setReference( m_setPointPos, CANSparkMax.ControlType.kPosition );
+        }
+
+    }
+
+    public void home( double speed )
+    {
+        double driveDownSpeed = -1.0 * Math.abs( speed );
+
+        if ( !m_limitSwitch.get() )
+        {
+            m_elevatorRightSparkMax.set( driveDownSpeed );
+        }
+        else
+        {
+            m_elevatorLiftEncoder.setPosition( 0.0 );
+            m_inputMode = InputMode.LOWER_LIMIT;
         }
 
     }

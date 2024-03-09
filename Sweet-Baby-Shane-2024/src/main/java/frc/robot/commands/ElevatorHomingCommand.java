@@ -26,7 +26,7 @@ public class ElevatorHomingCommand extends Command
     public void execute()
     {
         System.out.println( "!!!!!!!!!!!!!!!! DID THIS RUN! !!!!!!!!!!!!!!!" );
-        m_elevator.lift( kDriveDownSpeed );
+        m_elevator.home( kDriveDownSpeed );
     }
 
     @Override
