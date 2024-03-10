@@ -7,7 +7,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 
-public class ElevatorLiftCommand extends Command
+public class ElevatorCommand extends Command
 {
     private static final double kLiftSlewRateLimit = 0.1;
 
@@ -18,7 +18,7 @@ public class ElevatorLiftCommand extends Command
     //Constants
     public final int kSpeedAccelerationLimit = 1;
 
-    public ElevatorLiftCommand(
+    public ElevatorCommand(
         Elevator         elevator,
         Supplier<Double> speedSupplier )
     {

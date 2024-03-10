@@ -29,7 +29,7 @@ public class IntakePivot extends SubsystemBase
     private static final double kD = 0.0;
 
     // Switch Channel
-    public static final int kLimitSwitchChannel = 2;
+    public static final int kLimitSwitchChannel = 1;
 
     private ControlMode m_controlMode = ControlMode.UNSET;
     private InputMode   m_inputMode   = InputMode.NOMINAL;

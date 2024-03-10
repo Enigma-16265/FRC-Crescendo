@@ -23,11 +23,12 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.IntakeHomingCommand;
+import frc.robot.commands.IntakePivotHomingCommand;
 import frc.robot.commands.IntakePivotCommand;
-import frc.robot.commands.ElevatorLiftCommand;
+import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorHomingCommand;
 import frc.robot.commands.ShooterPivotCommand;
+import frc.robot.commands.ShooterPivotHomingCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -62,11 +63,11 @@ public class RobotContainer {
     private final ShooterPivot shooterPivot = new ShooterPivot();
 
     // Commands
-    private final ElevatorLiftCommand liftCommand;
+    private final ElevatorCommand     elevatorCommand;
     private final IntakeCommand       intakeCommand;
     private final IntakePivotCommand  intakePivotCommand;
     private final ShooterCommand      shooterCommand;
-    private final ShooterPivotCommand pivotCommand;
+    private final ShooterPivotCommand shooterPivotCommand;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -87,11 +88,11 @@ public class RobotContainer {
                 true, true),
             m_robotDrive));
             
-    liftCommand = new ElevatorLiftCommand(
+    elevatorCommand = new ElevatorCommand(
         elevator,
         () -> MathUtil.applyDeadband( -m_mechanicController.getLeftY(), OIConstants.kElevatorDeadband )
     );
-    elevator.setDefaultCommand(liftCommand);
+    elevator.setDefaultCommand(elevatorCommand);
 
     intakeCommand = new IntakeCommand( 
         intake,
@@ -120,21 +121,15 @@ public class RobotContainer {
 
           if (m_mechanicController.getYButton() )
           {
-
             speed = 0.5;
-
           }
           else if ( m_mechanicController.getXButton() )
           {
-            
             speed = 0.1;
-
           }
           else if ( m_mechanicController.getAButton() )
           {
-
             speed = -0.1;
-
           }
 
           return speed;
@@ -143,11 +138,11 @@ public class RobotContainer {
     );
     shooter.setDefaultCommand(shooterCommand);
 
-    pivotCommand = new ShooterPivotCommand(
+    shooterPivotCommand = new ShooterPivotCommand(
         shooterPivot,
         () -> MathUtil.applyDeadband( -m_mechanicController.getRightY(), OIConstants.kElevatorDeadband )
     );
-    shooterPivot.setDefaultCommand( pivotCommand );
+    shooterPivot.setDefaultCommand( shooterPivotCommand );
 
   }
 
@@ -218,8 +213,11 @@ public class RobotContainer {
       Command elevatorHomingCommand = new ElevatorHomingCommand( elevator );
       elevatorHomingCommand.schedule();
 
-      Command intakeHomingCommand = new IntakeHomingCommand( intakePivot );
-      intakeHomingCommand.schedule();
+      Command intakePivotHomingCommand = new IntakePivotHomingCommand( intakePivot );
+      intakePivotHomingCommand.schedule();
+
+      Command shooterPivotHomingCommand = new ShooterPivotHomingCommand( shooterPivot );
+      shooterPivotHomingCommand.schedule();
   }
 
 }

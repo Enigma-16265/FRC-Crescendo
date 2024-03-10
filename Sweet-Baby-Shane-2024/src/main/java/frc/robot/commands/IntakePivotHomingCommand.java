@@ -4,14 +4,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.InputMode;
 
-public class IntakeHomingCommand extends Command
+public class IntakePivotHomingCommand extends Command
 {
 
     private static final double kDriveDownSpeed = -0.1;
 
     private final IntakePivot m_intake;
 
-    public IntakeHomingCommand( IntakePivot intake )
+    public IntakePivotHomingCommand( IntakePivot intake )
     {
         m_intake = intake;
         addRequirements( m_intake );

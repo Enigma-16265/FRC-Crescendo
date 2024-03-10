@@ -18,7 +18,7 @@ public class ShooterPivot extends SubsystemBase
     
     private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
-        "Subsystems.ElevatorLift",
+        "Subsystems.ShooterPivot",
         Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "controlMode", DataNetworkTableLog.COLUMN_TYPE.STRING,
                 "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
@@ -36,7 +36,7 @@ public class ShooterPivot extends SubsystemBase
     public static final double kPositionConversionFactor = 1.0 / 36.0;
 
     // Switch Channel
-    public static final int kLimitSwitchChannel = 0;
+    public static final int kLimitSwitchChannel = 3;
 
     // Modes
     private ControlMode m_controlMode = ControlMode.UNSET;
