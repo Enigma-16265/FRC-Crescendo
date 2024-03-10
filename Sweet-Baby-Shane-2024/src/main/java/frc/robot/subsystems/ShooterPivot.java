@@ -23,7 +23,8 @@ public class ShooterPivot extends SubsystemBase
         Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "controlMode", DataNetworkTableLog.COLUMN_TYPE.STRING,
                 "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
+                "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING,
+                "positiveDir", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
 
     // Can IDs
     public static final int kShooterPivotCanID = 12;
@@ -37,7 +38,7 @@ public class ShooterPivot extends SubsystemBase
     public static final double kPositionConversionFactor = 1.0 / 36.0;
 
     // Switch Channel
-    public static final int kLimitSwitchChannel = 3;
+    public static final int kLimitSwitchChannel = 2;
 
     // Modes
     private ControlMode m_controlMode = ControlMode.UNSET;
@@ -60,6 +61,7 @@ public class ShooterPivot extends SubsystemBase
 
         // Pivot
         m_shooterPivotSparkFlex = new CANSparkFlex(kShooterPivotCanID, MotorType.kBrushless);
+        //m_shooterPivotSparkFlex.setInverted( true );
 
         m_shooterPivotEncoder = m_shooterPivotSparkFlex.getEncoder();
         m_shooterPivotEncoder.setPositionConversionFactor( kPositionConversionFactor );
@@ -84,8 +86,9 @@ public class ShooterPivot extends SubsystemBase
     public void slew( double speed, boolean positiveDirection )
     {
         dataLog.publish( "speed", speed );
+        dataLog.publish( "positiveDir", ( positiveDirection ? "true" : "false" ) );
 
-        if ( ( speed != 0.0 ) && m_limitSwitch.get() )
+        if ( ( speed != 0.0 ) && !m_limitSwitch.get() )
         {
 
             if ( m_shooterPivotEncoder.getPosition() <=  2.0 )

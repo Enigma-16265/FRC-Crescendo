@@ -121,15 +121,15 @@ public class RobotContainer {
 
           if (m_mechanicController.getYButton() )
           {
-            speed = 0.5;
+            speed = 0.8;
           }
           else if ( m_mechanicController.getXButton() )
           {
-            speed = 0.1;
+            speed = 0.05;
           }
           else if ( m_mechanicController.getAButton() )
           {
-            speed = -0.1;
+            speed = -0.05;
           }
 
           return speed;
@@ -140,7 +140,7 @@ public class RobotContainer {
 
     shooterPivotCommand = new ShooterPivotCommand(
         shooterPivot,
-        () -> MathUtil.applyDeadband( -m_mechanicController.getRightY(), OIConstants.kElevatorDeadband )
+        () -> MathUtil.applyDeadband( m_mechanicController.getRightY(), OIConstants.kElevatorDeadband )
     );
     shooterPivot.setDefaultCommand( shooterPivotCommand );
 
