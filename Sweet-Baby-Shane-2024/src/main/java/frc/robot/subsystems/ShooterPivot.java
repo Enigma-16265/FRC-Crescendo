@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import frc.logging.DataNetworkTableLog;
 
@@ -28,13 +29,14 @@ public class ShooterPivot extends SubsystemBase
                 "encoderPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "limitSwitch", DataNetworkTableLog.COLUMN_TYPE.STRING,
                 "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "simEncoderPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+                "simEncoderPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "homeMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
 
     // Can IDs
     public static final int kShooterPivotCanID = 12;
     
     // PID
-    private static final double kP = 0.1;
+    private static final double kP = 0.0;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
@@ -66,7 +68,7 @@ public class ShooterPivot extends SubsystemBase
 
         // Pivot
         m_shooterPivotSparkFlex = new CANSparkFlex(kShooterPivotCanID, MotorType.kBrushless);
-        //m_shooterPivotSparkFlex.setInverted( true );
+        m_shooterPivotSparkFlex.setIdleMode( IdleMode.kBrake );
 
         m_shooterPivotEncoder = m_shooterPivotSparkFlex.getEncoder();
         m_shooterPivotEncoder.setPositionConversionFactor( kPositionConversionFactor );
@@ -147,7 +149,7 @@ public class ShooterPivot extends SubsystemBase
                 dataLog.publish( "setPointPos", m_setPointPos );
             }
 
-            m_shooterPivotSparkFlex.set( speed );
+            m_shooterPivotPIDController.setReference( speed, CANSparkMax.ControlType.kDutyCycle );
 
             if ( RobotBase.isSimulation() )
             {
@@ -167,24 +169,53 @@ public class ShooterPivot extends SubsystemBase
                 dataLog.publish( "setPointPos", m_setPointPos );
             }
 
-            m_shooterPivotPIDController.setReference( m_setPointPos, CANSparkMax.ControlType.kPosition );
+            m_shooterPivotPIDController.setReference( 0.0, CANSparkMax.ControlType.kDutyCycle );
         }
 
     }
+    
+    private HomeMode m_homeMode = HomeMode.LOST;
 
     public void home( double speed )
     {
+        
         double driveDownSpeed = -1.0 * Math.abs( speed );
 
-        if ( !m_limitSwitch.get() )
+        boolean limitSwitchActive = !m_limitSwitch.get();
+        if ( RobotBase.isSimulation() )
         {
-            m_shooterPivotSparkFlex.set( driveDownSpeed );
+            limitSwitchActive = !getSimLimitSwitch();
+        }
+
+
+        if ( !limitSwitchActive )
+        {
+            m_homeMode = HomeMode.DRIVE_DOWN;
+            //m_shooterPivotSparkFlex.set( driveDownSpeed );
+            m_shooterPivotPIDController.setReference( driveDownSpeed, CANSparkMax.ControlType.kDutyCycle );
+
+            if ( RobotBase.isSimulation() )
+            {
+                updateSimEncoder( speed );
+            }
         }
         else
         {
-            m_shooterPivotEncoder.setPosition( 0.0 );
+            m_homeMode = HomeMode.HOMED;
             m_inputMode = InputMode.LOWER_LIMIT;
+            m_shooterPivotEncoder.setPosition( 0.0 );
+            m_shooterPivotPIDController.setReference( 0.0, CANSparkMax.ControlType.kPosition );
         }
+
+        dataLog.publish( "homeMode", m_homeMode );
+
+        double  encoderPos = m_shooterPivotEncoder.getPosition();
+        if ( RobotBase.isSimulation() )
+        {
+            encoderPos = getSimEncoderPos();
+        }
+
+        dataLog.publish( "encoderPos", encoderPos );
 
     }
 

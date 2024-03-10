@@ -24,7 +24,7 @@ public class ShooterPivotHomingCommand extends Command
     @Override
     public void execute()
     {
-        System.out.println( "ShooterPivot execute!!!!!!!!!!!!!" );
+        System.out.println( "ShooterPivot homing execute!!!!!!!!!!!!!" );
         m_shooterPivot.home( kDriveDownSpeed );
     }
 

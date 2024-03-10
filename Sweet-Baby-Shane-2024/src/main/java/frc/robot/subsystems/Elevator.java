@@ -2,9 +2,11 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.logging.DataNetworkTableLog;
 
@@ -19,20 +21,26 @@ public class Elevator extends SubsystemBase
     new DataNetworkTableLog( 
         "Subsystems.ElevatorLift",
         Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "posDir", DataNetworkTableLog.COLUMN_TYPE.STRING,
                 "controlMode", DataNetworkTableLog.COLUMN_TYPE.STRING,
+                "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING,
+                "encoderPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "limitSwitch", DataNetworkTableLog.COLUMN_TYPE.STRING,
                 "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
+                "simEncoderPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "homeMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
 
     // Can ID
     public static final int kElevatorRightCanID = 10;
     public static final int kElevatorLeftCanID = 9;
 
     // PID
-    private static final double kP = 0.1;
+    private static final double kP = 0.0;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
     // Constants
+    public static final double kEncoderCloseToZero = 2.0;
     public static final double kPositionConversionFactor = 1.0/25.0;
     public static final double kPullyDiamaterM = 38.82/1000;
 
@@ -48,6 +56,7 @@ public class Elevator extends SubsystemBase
     private final CANSparkMax m_elevatorLeftSparkMax;
 
     private final RelativeEncoder m_elevatorLiftEncoder;
+    private final RelativeEncoder m_elevatorLeftEncoder;
 
     private final SparkPIDController m_elevatorPIDController;
 
@@ -62,11 +71,18 @@ public class Elevator extends SubsystemBase
         m_elevatorRightSparkMax = new CANSparkMax(kElevatorRightCanID, MotorType.kBrushless);
         m_elevatorLeftSparkMax = new CANSparkMax(kElevatorLeftCanID, MotorType.kBrushless);
 
-        m_elevatorLeftSparkMax.follow(m_elevatorRightSparkMax, true);
+        m_elevatorRightSparkMax.setIdleMode( IdleMode.kBrake );
+        m_elevatorLeftSparkMax.setIdleMode( IdleMode.kBrake );
+
+        m_elevatorLeftSparkMax.follow(m_elevatorRightSparkMax );
 
         m_elevatorLiftEncoder = m_elevatorRightSparkMax.getEncoder();
         m_elevatorLiftEncoder.setPositionConversionFactor(kPositionConversionFactor);
         m_elevatorLiftEncoder.setPosition( 0.0 );
+
+        m_elevatorLeftEncoder = m_elevatorLeftSparkMax.getEncoder();
+        m_elevatorLeftEncoder.setPositionConversionFactor(kPositionConversionFactor);
+        m_elevatorLeftEncoder.setPosition( 0.0 );
         
         m_elevatorPIDController = m_elevatorRightSparkMax.getPIDController();
 
@@ -88,11 +104,24 @@ public class Elevator extends SubsystemBase
     public void lift( double speed, boolean positiveDirection )
     {
         dataLog.publish( "speed", speed );
+        dataLog.publish( "posDir", positiveDirection );
 
-        if ( ( speed != 0.0 ) && m_limitSwitch.get() )
+        double  encoderPos        = m_elevatorLiftEncoder.getPosition();
+        boolean limitSwitchActive = !m_limitSwitch.get();
+
+        if ( RobotBase.isSimulation() )
+        {
+            encoderPos        = getSimEncoderPos();
+            limitSwitchActive = !getSimLimitSwitch();
+        }
+
+        dataLog.publish( "encoderPos", encoderPos );
+        dataLog.publish( "limitSwitch", limitSwitchActive );
+
+        if ( ( speed != 0.0 ) && limitSwitchActive )
         {
 
-            if ( m_elevatorLiftEncoder.getPosition() <=  2.0 )
+            if ( encoderPos <= kEncoderCloseToZero )
             {
                 
                 m_inputMode = InputMode.LOWER_LIMIT;
@@ -131,7 +160,12 @@ public class Elevator extends SubsystemBase
                 dataLog.publish( "setPointPos", m_setPointPos );
             }
 
-            m_elevatorRightSparkMax.set( speed );
+            m_elevatorPIDController.setReference( speed, CANSparkMax.ControlType.kDutyCycle );
+
+            if ( RobotBase.isSimulation() )
+            {
+                updateSimEncoder( speed );
+            }
 
         }
         else
@@ -140,31 +174,91 @@ public class Elevator extends SubsystemBase
             if ( m_controlMode != ControlMode.HOLD )
             {
                 m_controlMode = ControlMode.HOLD;
-                m_setPointPos = m_elevatorLiftEncoder.getPosition();
+                m_setPointPos = encoderPos;
 
                 dataLog.publish( "controlMode", m_controlMode );
                 dataLog.publish( "setPointPos", m_setPointPos );
             }
 
-            m_elevatorPIDController.setReference( m_setPointPos, CANSparkMax.ControlType.kPosition );
+            m_elevatorPIDController.setReference( 0.0, CANSparkMax.ControlType.kDutyCycle );
         }
 
     }
+
+    private HomeMode m_homeMode = HomeMode.LOST;
 
     public void home( double speed )
     {
+        
         double driveDownSpeed = -1.0 * Math.abs( speed );
 
-        if ( !m_limitSwitch.get() )
+        boolean limitSwitchActive = !m_limitSwitch.get();
+        if ( RobotBase.isSimulation() )
         {
-            m_elevatorRightSparkMax.set( driveDownSpeed );
+            limitSwitchActive = !getSimLimitSwitch();
+        }
+
+
+        if ( !limitSwitchActive )
+        {
+            m_homeMode = HomeMode.DRIVE_DOWN;
+            m_elevatorPIDController.setReference( driveDownSpeed, CANSparkMax.ControlType.kDutyCycle );
+
+            if ( RobotBase.isSimulation() )
+            {
+                updateSimEncoder( speed );
+            }
         }
         else
         {
-            m_elevatorLiftEncoder.setPosition( 0.0 );
+            m_homeMode = HomeMode.HOMED;
             m_inputMode = InputMode.LOWER_LIMIT;
+            m_elevatorLiftEncoder.setPosition( 0.0 );
+            m_elevatorPIDController.setReference( 0.0, CANSparkMax.ControlType.kPosition );
         }
 
+        dataLog.publish( "homeMode", m_homeMode );
+
+        double  encoderPos = m_elevatorLiftEncoder.getPosition();
+        if ( RobotBase.isSimulation() )
+        {
+            encoderPos = getSimEncoderPos();
+        }
+
+        dataLog.publish( "encoderPos", encoderPos );
+
     }
+
+    // Sim methods
+    private double m_simEncoderPos = 0.0;
+
+    private void updateSimEncoder( double speed )
+    {
+        m_simEncoderPos += speed;
+        dataLog.publish( "simEncoderPos", m_simEncoderPos );
+    }
+
+    private boolean getSimLimitSwitch()
+    {
+
+        boolean limitSwitchPulledHigh = true;
+
+        if ( m_simEncoderPos < -5.0 ) 
+        {
+            limitSwitchPulledHigh = false;
+        }
+        else if ( m_simEncoderPos > 5.0 )
+        {
+            limitSwitchPulledHigh = false;
+        }
+
+        return limitSwitchPulledHigh;
+    }
+
+    private double getSimEncoderPos()
+    {
+        return m_simEncoderPos;
+    }
+
 
 }
