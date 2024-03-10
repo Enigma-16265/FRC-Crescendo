@@ -137,7 +137,7 @@ public class RobotContainer {
 
     shooterPivotCommand = new ShooterPivotCommand(
         shooterPivot,
-        () -> MathUtil.applyDeadband( m_mechanicController.getRightY(), OIConstants.kElevatorDeadband )
+        () -> MathUtil.applyDeadband( -m_mechanicController.getRightY(), OIConstants.kElevatorDeadband )
     );
     shooterPivot.setDefaultCommand( shooterPivotCommand );
 
