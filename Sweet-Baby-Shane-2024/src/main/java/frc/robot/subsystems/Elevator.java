@@ -30,7 +30,8 @@ public class Elevator extends SubsystemBase
                 "limitSwitch", DataNetworkTableLog.COLUMN_TYPE.STRING,
                 "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "simEncoderPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "homeMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
+                "homeMode", DataNetworkTableLog.COLUMN_TYPE.STRING,
+                "upperLimitNudges", DataNetworkTableLog.COLUMN_TYPE.INTEGER ) );
 
     // Can ID
     public static final int kElevatorRightCanID = 10;
@@ -102,7 +103,10 @@ public class Elevator extends SubsystemBase
     {
         return m_inputMode;
     }
+
+    public static final int kMaxUpperLimitNudges = 1;
     private int m_UpperLimitNudges = 0;
+
     public void lift( double speed, boolean positiveDirection )
     {
         dataLog.publish( "speed", speed );
@@ -119,6 +123,8 @@ public class Elevator extends SubsystemBase
 
         dataLog.publish( "encoderPos", encoderPos );
         dataLog.publish( "limitSwitch", limitSwitchActive );
+
+        dataLog.publish( "upperLimitNudges", m_UpperLimitNudges );
 
         if ( ( speed != 0.0 ) && limitSwitchActive )
         {
@@ -140,12 +146,10 @@ public class Elevator extends SubsystemBase
                 m_inputMode = InputMode.UPPER_LIMIT;
                 if ( positiveDirection )
                 {
-                    if ( m_UpperLimitNudges < 0 )
+                    if ( m_UpperLimitNudges < kMaxUpperLimitNudges )
                     {
                         m_UpperLimitNudges++;
                         speed = 0.25;
-                        Log.info( String.format( "Requesting Nudge: %f\n", speed ) );
-                        System.out.printf( "Requesting Nudge: %f\n", speed );
                     }
                     else
                     {
@@ -160,7 +164,7 @@ public class Elevator extends SubsystemBase
         {
             m_inputMode = InputMode.NOMINAL;
 
-            if ( limitSwitchActive )
+            if ( !limitSwitchActive )
             {
                 m_UpperLimitNudges = 0;
             }

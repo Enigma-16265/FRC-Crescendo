@@ -173,7 +173,6 @@ public class DataNetworkTableLog
     {
 
         if ( ( obj instanceof Long    ) ||
-             ( obj instanceof Integer ) ||
              ( obj instanceof Short   ) ||
              ( obj instanceof Byte    )    )
         {
@@ -189,6 +188,23 @@ public class DataNetworkTableLog
             if ( pub instanceof IntegerPublisher )
             {
                 ( (IntegerPublisher) pub ).set( (Long) obj );
+            }
+
+        } else
+        if ( obj instanceof Integer )
+        {
+
+            Publisher pub = publishers.get( name );
+            if ( pub == null )
+            {
+                pub = networkTableInstance.getIntegerTopic(
+                    String.format( COLUMN_PUBLISHER_NAME_FORMAT, tableName, name ) ).publish();
+                publishers.put( name, pub );
+            }
+
+            if ( pub instanceof IntegerPublisher )
+            {
+                ( (IntegerPublisher) pub ).set( ( (Integer) obj ).longValue() );
             }
 
         } else
