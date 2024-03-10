@@ -1,6 +1,6 @@
 package frc.logging;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import edu.wpi.first.networktables.DoubleArrayPublisher;
@@ -36,7 +36,7 @@ public class DataNetworkTableLog
     private NetworkTableInstance networkTableInstance;
     private String               tableName;
 
-    private Map< String, Publisher > publishers = new HashMap< String, Publisher >();
+    private Map< String, Publisher > publishers = new LinkedHashMap< String, Publisher >();
 
     public DataNetworkTableLog( String tableName, Map< String, COLUMN_TYPE > columns )
     {

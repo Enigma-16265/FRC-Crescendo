@@ -7,8 +7,6 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,7 +16,6 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ShooterCommand;
@@ -140,7 +137,8 @@ public class RobotContainer {
 
     shooterPivotCommand = new ShooterPivotCommand(
         shooterPivot,
-        () -> MathUtil.applyDeadband( -m_mechanicController.getRightY(), OIConstants.kElevatorDeadband )
+        //() -> MathUtil.applyDeadband( -m_mechanicController.getRightY(), OIConstants.kElevatorDeadband )
+        () -> MathUtil.applyDeadband( -m_mechanicController.getRawAxis(4), OIConstants.kElevatorDeadband )
     );
     shooterPivot.setDefaultCommand( shooterPivotCommand );
 
@@ -208,16 +206,16 @@ public class RobotContainer {
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
   }
 
-  void teleopInit()
+  public void teleopInit()
   {
       Command elevatorHomingCommand = new ElevatorHomingCommand( elevator );
-      elevatorHomingCommand.schedule();
+      // elevatorHomingCommand.schedule();
 
       Command intakePivotHomingCommand = new IntakePivotHomingCommand( intakePivot );
-      intakePivotHomingCommand.schedule();
+      // intakePivotHomingCommand.schedule();
 
       Command shooterPivotHomingCommand = new ShooterPivotHomingCommand( shooterPivot );
-      shooterPivotHomingCommand.schedule();
+      // shooterPivotHomingCommand.schedule();
   }
 
 }

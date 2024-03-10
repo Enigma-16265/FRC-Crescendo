@@ -7,10 +7,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.logging.DataNetworkTableLog;
-import frc.robot.Constants.ModuleConstants;
 
 // 4 Motors
 // private final CANSparkMax m_shooterFlywheelOneSparkMax;
@@ -39,10 +37,6 @@ public class Shooter extends SubsystemBase
     // Can IDs
     public static final int kShooterFlywheelRightCanID = 14;
     public static final int kShooterFlywheelLeftCanID = 13;
-
-    private static final double ANGLE_TOLERANCE = 2.0; // degrees
-    private static final double maxAngle = 90.0; // maximum angle
-    private static final double minAngle = 0.0; // minimum angle
     
     private static final double kP = 0.1;
     private static final double kI = 0.0;
