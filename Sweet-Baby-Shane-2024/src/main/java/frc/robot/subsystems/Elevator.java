@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -16,6 +17,7 @@ import com.revrobotics.SparkPIDController;
 
 public class Elevator extends SubsystemBase
 {
+    private static final Logger Log = Logger.getLogger( Elevator.class.getName() );
 
     private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
@@ -44,7 +46,7 @@ public class Elevator extends SubsystemBase
     public static final double kPositionConversionFactor = 1.0/25.0;
     public static final double kPullyDiamaterM = 38.82/1000;
 
-    // Switch Channel
+    // Switch Channel25
     public static final int kLimitSwitchChannel = 0;
 
     // Modes
@@ -100,7 +102,7 @@ public class Elevator extends SubsystemBase
     {
         return m_inputMode;
     }
-
+    private int m_UpperLimitNudges = 0;
     public void lift( double speed, boolean positiveDirection )
     {
         dataLog.publish( "speed", speed );
@@ -130,20 +132,38 @@ public class Elevator extends SubsystemBase
                     speed = 0.0;
                 }
 
+                m_UpperLimitNudges = 0;
             }
             else
             {
+
                 m_inputMode = InputMode.UPPER_LIMIT;
                 if ( positiveDirection )
                 {
-                    speed = 0.0;
+                    if ( m_UpperLimitNudges < 0 )
+                    {
+                        m_UpperLimitNudges++;
+                        speed = 0.25;
+                        Log.info( String.format( "Requesting Nudge: %f\n", speed ) );
+                        System.out.printf( "Requesting Nudge: %f\n", speed );
+                    }
+                    else
+                    {
+                        speed = 0.0;
+                    }
                 }
+
             }
 
         }
         else
         {
             m_inputMode = InputMode.NOMINAL;
+
+            if ( limitSwitchActive )
+            {
+                m_UpperLimitNudges = 0;
+            }
         }
 
         dataLog.publish( "inputMode", m_inputMode );

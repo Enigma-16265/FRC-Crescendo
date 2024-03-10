@@ -169,6 +169,7 @@ public class ShooterPivot extends SubsystemBase
                 dataLog.publish( "setPointPos", m_setPointPos );
             }
 
+            //m_shooterPivotPIDController.setReference( encoderPos, CANSparkMax.ControlType.kPosition );
             m_shooterPivotPIDController.setReference( 0.0, CANSparkMax.ControlType.kDutyCycle );
         }
 
@@ -186,7 +187,6 @@ public class ShooterPivot extends SubsystemBase
         {
             limitSwitchActive = !getSimLimitSwitch();
         }
-
 
         if ( !limitSwitchActive )
         {
