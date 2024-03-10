@@ -11,21 +11,21 @@ public class IntakePivotCommand extends Command
 
     private static final double kLiftSlewRateLimit = 0.1;
 
-    private final IntakePivot      manipulator;
+    private final IntakePivot      m_intakePivot;
     private final Supplier<Double> m_speedSupplier;
-    private final SlewRateLimiter   m_slewRateLimiter = new SlewRateLimiter( kLiftSlewRateLimit );
+    private final SlewRateLimiter  m_slewRateLimiter = new SlewRateLimiter( kLiftSlewRateLimit );
 
     //Constants
     public final int kSpeedAccelerationLimit = 1;
 
     public IntakePivotCommand(
-        IntakePivot      manipulator,
+        IntakePivot      intakePivot,
         Supplier<Double> speedSupplier )
     {
-        this.manipulator   = manipulator;
+        this.m_intakePivot   = intakePivot;
         this.m_speedSupplier = speedSupplier;
 
-        addRequirements( manipulator );
+        addRequirements( intakePivot );
     }
 
     @Override
@@ -48,7 +48,7 @@ public class IntakePivotCommand extends Command
         }
 
         double commandSpeed = m_slewRateLimiter.calculate( requestSpeed );
-        manipulator.slew( commandSpeed, positiveDirection );
+        m_intakePivot.slew( commandSpeed, positiveDirection );
 
     }
 
