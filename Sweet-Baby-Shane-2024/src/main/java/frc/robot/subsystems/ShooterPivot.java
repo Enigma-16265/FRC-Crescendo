@@ -25,7 +25,7 @@ public class ShooterPivot extends SubsystemBase
                 "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
 
     // Can IDs
-    public static final int kShooterPivotCanID = 18;
+    public static final int kShooterPivotCanID = 12;
     
     // PID
     private static final double kP = 0.1;
@@ -42,7 +42,7 @@ public class ShooterPivot extends SubsystemBase
     private ControlMode m_controlMode = ControlMode.UNSET;
     private InputMode   m_inputMode   = InputMode.NOMINAL;
 
-    // One Pivot motor
+    // One Pivot motor xjc
     private final CANSparkMax        m_shooterPivotSparkMax;
 
     private final RelativeEncoder    m_shooterPivotEncoder;

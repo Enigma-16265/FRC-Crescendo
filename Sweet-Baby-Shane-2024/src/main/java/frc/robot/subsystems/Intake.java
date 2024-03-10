@@ -20,7 +20,7 @@ public class Intake extends SubsystemBase
                     "holdPosition", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
     // Can IDs
-    public static final int kIntakeWheelCanID = 14;
+    public static final int kIntakeWheelCanID = 15;
 
     // PID
     private static final double kP = 0.1;

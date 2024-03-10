@@ -22,7 +22,7 @@ public class IntakePivot extends SubsystemBase
                     "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
 
     // Can IDs
-    public static final int kIntakePivotCanID = 15;
+    public static final int kIntakePivotCanID = 16;
 
     private static final double kP = 0.1;
     private static final double kI = 0.0;

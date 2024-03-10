@@ -37,8 +37,8 @@ public class Shooter extends SubsystemBase
                 "holdPosition", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
     // Can IDs
-    public static final int kShooterFlywheelRightCanID = 16;
-    public static final int kShooterFlywheelLeftCanID = 17;
+    public static final int kShooterFlywheelRightCanID = 14;
+    public static final int kShooterFlywheelLeftCanID = 13;
 
     private static final double ANGLE_TOLERANCE = 2.0; // degrees
     private static final double maxAngle = 90.0; // maximum angle

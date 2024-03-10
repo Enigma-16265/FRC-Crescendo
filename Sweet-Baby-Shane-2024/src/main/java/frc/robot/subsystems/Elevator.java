@@ -24,8 +24,8 @@ public class Elevator extends SubsystemBase
                 "inputMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
 
     // Can ID
-    public static final int kElevatorRightCanID = 12;
-    public static final int kElevatorLeftCanID = 13;
+    public static final int kElevatorRightCanID = 10;
+    public static final int kElevatorLeftCanID = 9;
 
     // PID
     private static final double kP = 0.1;
