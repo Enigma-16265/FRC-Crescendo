@@ -42,7 +42,7 @@ public class ShooterPivot extends SubsystemBase
     private ControlMode m_controlMode = ControlMode.UNSET;
     private InputMode   m_inputMode   = InputMode.NOMINAL;
 
-    // One Pivot motor xjc
+    // One Pivot motor
     private final CANSparkMax        m_shooterPivotSparkMax;
 
     private final RelativeEncoder    m_shooterPivotEncoder;
