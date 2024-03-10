@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -43,7 +44,7 @@ public class ShooterPivot extends SubsystemBase
     private InputMode   m_inputMode   = InputMode.NOMINAL;
 
     // One Pivot motor
-    private final CANSparkMax        m_shooterPivotSparkMax;
+    private final CANSparkFlex       m_shooterPivotSparkFlex;
 
     private final RelativeEncoder    m_shooterPivotEncoder;
 
@@ -58,13 +59,13 @@ public class ShooterPivot extends SubsystemBase
     {
 
         // Pivot
-        m_shooterPivotSparkMax = new CANSparkMax(kShooterPivotCanID, MotorType.kBrushless);
+        m_shooterPivotSparkFlex = new CANSparkFlex(kShooterPivotCanID, MotorType.kBrushless);
 
-        m_shooterPivotEncoder = m_shooterPivotSparkMax.getEncoder();
+        m_shooterPivotEncoder = m_shooterPivotSparkFlex.getEncoder();
         m_shooterPivotEncoder.setPositionConversionFactor( kPositionConversionFactor );
         m_shooterPivotEncoder.setPosition( 0.0 );
         
-        m_shooterPivotPIDController = m_shooterPivotSparkMax.getPIDController();
+        m_shooterPivotPIDController = m_shooterPivotSparkFlex.getPIDController();
 
         m_shooterPivotPIDController.setFeedbackDevice( m_shooterPivotEncoder );
 
@@ -126,7 +127,7 @@ public class ShooterPivot extends SubsystemBase
                 dataLog.publish( "setPointPos", m_setPointPos );
             }
 
-            m_shooterPivotSparkMax.set( speed );
+            m_shooterPivotSparkFlex.set( speed );
 
         }
         else
@@ -152,7 +153,7 @@ public class ShooterPivot extends SubsystemBase
 
         if ( !m_limitSwitch.get() )
         {
-            m_shooterPivotSparkMax.set( driveDownSpeed );
+            m_shooterPivotSparkFlex.set( driveDownSpeed );
         }
         else
         {

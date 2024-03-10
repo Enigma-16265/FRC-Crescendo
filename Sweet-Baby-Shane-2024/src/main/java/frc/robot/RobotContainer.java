@@ -210,14 +210,14 @@ public class RobotContainer {
 
   void teleopInit()
   {
-      Command elevatorHomingCommand = new ElevatorHomingCommand( elevator );
-      elevatorHomingCommand.schedule();
+      // Command elevatorHomingCommand = new ElevatorHomingCommand( elevator );
+      // elevatorHomingCommand.schedule();
 
-      Command intakePivotHomingCommand = new IntakePivotHomingCommand( intakePivot );
-      intakePivotHomingCommand.schedule();
+      // Command intakePivotHomingCommand = new IntakePivotHomingCommand( intakePivot );
+      // intakePivotHomingCommand.schedule();
 
-      Command shooterPivotHomingCommand = new ShooterPivotHomingCommand( shooterPivot );
-      shooterPivotHomingCommand.schedule();
+      // Command shooterPivotHomingCommand = new ShooterPivotHomingCommand( shooterPivot );
+      // shooterPivotHomingCommand.schedule();
   }
 
 }

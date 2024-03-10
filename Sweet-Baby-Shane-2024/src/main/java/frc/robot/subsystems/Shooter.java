@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.Map;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -49,8 +50,8 @@ public class Shooter extends SubsystemBase
     private static final double kD = 0.0;
 
     // Two fly-wheel motors
-    private final CANSparkMax        m_shooterFlywheelRightSparkMax;
-    private final CANSparkMax        m_shooterFlywheelLeftSparkMax;
+    private final CANSparkFlex       m_shooterFlywheelRightSparkFlex;
+    private final CANSparkFlex       m_shooterFlywheelLeftSparkFlex;
     private final RelativeEncoder    m_shooterFlywheelEncoder;
     private final SparkPIDController m_shooterFlywheelPIDController;
 
@@ -60,16 +61,16 @@ public class Shooter extends SubsystemBase
     {
 
         // Flywheel
-        m_shooterFlywheelRightSparkMax = new CANSparkMax(kShooterFlywheelRightCanID, MotorType.kBrushless);
-        m_shooterFlywheelLeftSparkMax = new CANSparkMax(kShooterFlywheelLeftCanID, MotorType.kBrushless);
+        m_shooterFlywheelRightSparkFlex = new CANSparkFlex(kShooterFlywheelRightCanID, MotorType.kBrushless);
+        m_shooterFlywheelLeftSparkFlex = new CANSparkFlex(kShooterFlywheelLeftCanID, MotorType.kBrushless);
 
-        m_shooterFlywheelLeftSparkMax.follow(m_shooterFlywheelRightSparkMax, true);
+        m_shooterFlywheelLeftSparkFlex.follow(m_shooterFlywheelRightSparkFlex, true);
 
-        m_shooterFlywheelEncoder = m_shooterFlywheelRightSparkMax.getEncoder();
+        m_shooterFlywheelEncoder = m_shooterFlywheelRightSparkFlex.getEncoder();
         m_shooterFlywheelEncoder.setPositionConversionFactor( 1.0 / 36.0 );
         m_shooterFlywheelEncoder.setPosition( 0.0 );
         
-        m_shooterFlywheelPIDController = m_shooterFlywheelRightSparkMax.getPIDController();
+        m_shooterFlywheelPIDController = m_shooterFlywheelRightSparkFlex.getPIDController();
 
         m_shooterFlywheelPIDController.setFeedbackDevice( m_shooterFlywheelEncoder );
 
@@ -88,7 +89,7 @@ public class Shooter extends SubsystemBase
         if ( speed != 0.0 )
         {
             
-            m_shooterFlywheelRightSparkMax.set( speed );
+            m_shooterFlywheelRightSparkFlex.set( speed );
 
             if ( holdPosition >= 0.0 )
             {
