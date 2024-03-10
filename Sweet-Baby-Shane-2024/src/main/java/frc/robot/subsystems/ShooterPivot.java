@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -42,14 +43,14 @@ public class ShooterPivot extends SubsystemBase
     public static final double kEncoderCloseToZero = 2.0;
 
     // Switch Channel
-    public static final int kLimitSwitchChannel = 3;
+    public static final int kLimitSwitchChannel = 2;
 
     // Modes
     private ControlMode m_controlMode = ControlMode.UNSET;
     private InputMode   m_inputMode   = InputMode.NOMINAL;
 
-    // One Pivot motor xjc
-    private final CANSparkMax        m_shooterPivotSparkMax;
+    // One Pivot motor
+    private final CANSparkFlex       m_shooterPivotSparkFlex;
 
     private final RelativeEncoder    m_shooterPivotEncoder;
 
@@ -64,13 +65,14 @@ public class ShooterPivot extends SubsystemBase
     {
 
         // Pivot
-        m_shooterPivotSparkMax = new CANSparkMax(kShooterPivotCanID, MotorType.kBrushless);
+        m_shooterPivotSparkFlex = new CANSparkFlex(kShooterPivotCanID, MotorType.kBrushless);
+        //m_shooterPivotSparkFlex.setInverted( true );
 
-        m_shooterPivotEncoder = m_shooterPivotSparkMax.getEncoder();
+        m_shooterPivotEncoder = m_shooterPivotSparkFlex.getEncoder();
         m_shooterPivotEncoder.setPositionConversionFactor( kPositionConversionFactor );
         m_shooterPivotEncoder.setPosition( 0.0 );
         
-        m_shooterPivotPIDController = m_shooterPivotSparkMax.getPIDController();
+        m_shooterPivotPIDController = m_shooterPivotSparkFlex.getPIDController();
 
         m_shooterPivotPIDController.setFeedbackDevice( m_shooterPivotEncoder );
 
@@ -145,7 +147,7 @@ public class ShooterPivot extends SubsystemBase
                 dataLog.publish( "setPointPos", m_setPointPos );
             }
 
-            m_shooterPivotSparkMax.set( speed );
+            m_shooterPivotSparkFlex.set( speed );
 
             if ( RobotBase.isSimulation() )
             {
@@ -176,7 +178,7 @@ public class ShooterPivot extends SubsystemBase
 
         if ( !m_limitSwitch.get() )
         {
-            m_shooterPivotSparkMax.set( driveDownSpeed );
+            m_shooterPivotSparkFlex.set( driveDownSpeed );
         }
         else
         {
