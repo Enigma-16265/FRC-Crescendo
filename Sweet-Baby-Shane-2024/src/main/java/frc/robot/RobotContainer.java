@@ -104,7 +104,6 @@ public class RobotContainer {
     intakePivotCommand = new IntakePivotCommand(
         intakePivot,
         () -> {
-          // Empty for now
           return 0.0;
         }
     );

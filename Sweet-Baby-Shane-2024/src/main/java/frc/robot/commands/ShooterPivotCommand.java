@@ -12,10 +12,10 @@ public class ShooterPivotCommand extends Command
 {
 
     private static final DataNetworkTableLog dataLog =
-    new DataNetworkTableLog( 
-        "Subsystems.ShooterPivot.DefaultCommand",
-        Map.of( "requestSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "commandSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+        new DataNetworkTableLog( 
+            "Subsystems.ShooterPivot.DefaultCommand",
+            Map.of( "requestSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                    "commandSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
     private static final double kLiftSlewRateLimit = 0.1;
     

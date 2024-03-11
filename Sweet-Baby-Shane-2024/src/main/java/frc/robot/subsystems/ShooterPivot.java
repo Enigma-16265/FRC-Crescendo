@@ -58,10 +58,10 @@ public class ShooterPivot extends SubsystemBase
 
     private final SparkPIDController m_shooterPivotPIDController;
 
-    private double m_setPointPos = 0.0;
-
     // Limit
     DigitalInput m_limitSwitch = new DigitalInput( kLimitSwitchChannel );
+
+    private double m_setPointPos = 0.0;
 
     public ShooterPivot()
     {

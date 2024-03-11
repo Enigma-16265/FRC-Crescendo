@@ -60,10 +60,10 @@ public class Elevator extends SubsystemBase
 
     private final SparkPIDController m_elevatorPIDController;
 
-    private double m_setPointPos = 0.0;
-
     // Limit
     DigitalInput m_limitSwitch = new DigitalInput( kLimitSwitchChannel );
+
+    private double m_setPointPos = 0.0;
 
     public Elevator()
     {
