@@ -98,6 +98,7 @@ public class Elevator extends SubsystemBase
     }
 
     public static final int kMaxUpperLimitNudges = 1;
+    public static final double kUpeerLimitNudgeFactor = 0.25;
     private int m_UpperLimitNudges = 0;
 
     public void lift( double speed, boolean positiveDirection )
@@ -142,7 +143,7 @@ public class Elevator extends SubsystemBase
                     if ( m_UpperLimitNudges < kMaxUpperLimitNudges )
                     {
                         m_UpperLimitNudges++;
-                        speed = 0.25;
+                        speed = kUpeerLimitNudgeFactor;
                     }
                     else
                     {
