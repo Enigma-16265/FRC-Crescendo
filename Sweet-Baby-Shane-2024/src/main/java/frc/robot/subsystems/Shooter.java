@@ -11,22 +11,6 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.logging.DataNetworkTableLog;
 
-// 4 Motors
-// private final CANSparkMax m_shooterFlywheelOneSparkMax;
-// private final CANSparkMax m_shooterFlywheelTwoSparkMax;
-// private final CANSparkMax m_shooterPivotSparkMax;
-// private final CANSparkMax m_shooterFeederSparkMax;
-
-// private final RelativeEncoder m_shooterFlywheelOneEncoder;
-// private final RelativeEncoder m_shooterFlywheelTwoEncoder;
-// private final RelativeEncoder m_shooterPivotEncoder;
-// private final RelativeEncoder m_shooterFeederEncoder;
-
-// private final SparkPIDController m_shooterFlywheelOnePIDController;
-// private final SparkPIDController m_shooterFlywheelPIDController;
-// private final SparkPIDController m_shooterPivotPIDController;
-// private final SparkPIDController m_shooterFeederPIDController;
-
 public class Shooter extends SubsystemBase
 {
     private static final DataNetworkTableLog dataLog =
@@ -39,7 +23,7 @@ public class Shooter extends SubsystemBase
     public static final int kShooterFlywheelRightCanID = 14;
     public static final int kShooterFlywheelLeftCanID = 13;
     
-    private static final double kP = 0.1;
+    private static final double kP = 0.0;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
@@ -83,7 +67,7 @@ public class Shooter extends SubsystemBase
         if ( speed != 0.0 )
         {
             
-            m_shooterFlywheelRightSparkFlex.set( speed );
+            m_shooterFlywheelPIDController.setReference( speed, CANSparkMax.ControlType.kDutyCycle );
 
             if ( holdPosition >= 0.0 )
             {

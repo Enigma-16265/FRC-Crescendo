@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase
     public static final int kIntakeWheelCanID = 15;
 
     // PID
-    private static final double kP = 0.1;
+    private static final double kP = 0.0;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
@@ -63,7 +63,7 @@ public class Intake extends SubsystemBase
         if ( speed != 0.0 )
         {
             
-            m_intakeWheelSparkMax.set( speed );
+            m_intakePIDController.setReference( speed, CANSparkMax.ControlType.kDutyCycle );
 
             if ( holdPosition >= 0.0 )
             {
