@@ -208,16 +208,16 @@ public class RobotContainer {
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
   }
 
-  public void teleopInit()
+  public void subSystemReset()
   {
-      //Command elevatorHomingCommand = new ElevatorHomingCommand( elevator );
-      //elevatorHomingCommand.schedule();
+      Command elevatorHomingCommand = new ElevatorHomingCommand( elevator );
+      elevatorHomingCommand.schedule();
 
-      // Command intakePivotHomingCommand = new IntakePivotHomingCommand( intakePivot );
-      // intakePivotHomingCommand.schedule();
+      Command intakePivotHomingCommand = new IntakePivotHomingCommand( intakePivot );
+      intakePivotHomingCommand.schedule();
 
-      // Command shooterPivotHomingCommand = new ShooterPivotHomingCommand( shooterPivot );
-      // shooterPivotHomingCommand.schedule();
+      Command shooterPivotHomingCommand = new ShooterPivotHomingCommand( shooterPivot );
+      shooterPivotHomingCommand.schedule();
   }
 
 }
