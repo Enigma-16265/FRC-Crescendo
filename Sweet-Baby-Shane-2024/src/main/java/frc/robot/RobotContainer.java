@@ -26,6 +26,7 @@ import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorHomingCommand;
 import frc.robot.commands.ShooterPivotCommand;
 import frc.robot.commands.ShooterPivotHomingCommand;
+import frc.robot.commands.IntakePivotLimitCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -36,6 +37,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.List;
 
 /*
@@ -62,9 +65,12 @@ public class RobotContainer {
     // Commands
     private final ElevatorCommand     elevatorCommand;
     private final IntakeCommand       intakeCommand;
-    private final IntakePivotCommand  intakePivotCommand;
     private final ShooterCommand      shooterCommand;
     private final ShooterPivotCommand shooterPivotCommand;
+
+    // Driver Triggers
+    private final Trigger m_driveLeftBumperTrigger;
+    private final Trigger m_driverRightBumperTrigger;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -101,13 +107,11 @@ public class RobotContainer {
     );
     intake.setDefaultCommand(intakeCommand);
 
-    intakePivotCommand = new IntakePivotCommand(
-        intakePivot,
-        () -> {
-          return 0.0;
-        }
-    );
-    intakePivot.setDefaultCommand( intakePivotCommand );
+    m_driveLeftBumperTrigger = new JoystickButton( m_driverController, XboxController.Button.kLeftBumper.value );
+    m_driveLeftBumperTrigger.onTrue( new IntakePivotLimitCommand( intakePivot, IntakePivotLimitCommand.Behavior.GO ) );
+
+    m_driverRightBumperTrigger = new JoystickButton( m_driverController, XboxController.Button.kRightBumper.value );
+    m_driverRightBumperTrigger.onTrue( new IntakePivotLimitCommand( intakePivot, IntakePivotLimitCommand.Behavior.STOW ) );
 
     shooterCommand = new ShooterCommand(
         shooter,
