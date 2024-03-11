@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -17,7 +16,6 @@ import com.revrobotics.SparkPIDController;
 
 public class Elevator extends SubsystemBase
 {
-    private static final Logger Log = Logger.getLogger( Elevator.class.getName() );
 
     private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
@@ -59,7 +57,6 @@ public class Elevator extends SubsystemBase
     private final CANSparkMax m_elevatorLeftSparkMax;
 
     private final RelativeEncoder m_elevatorLiftEncoder;
-    private final RelativeEncoder m_elevatorLeftEncoder;
 
     private final SparkPIDController m_elevatorPIDController;
 
@@ -82,10 +79,6 @@ public class Elevator extends SubsystemBase
         m_elevatorLiftEncoder = m_elevatorRightSparkMax.getEncoder();
         m_elevatorLiftEncoder.setPositionConversionFactor(kPositionConversionFactor);
         m_elevatorLiftEncoder.setPosition( 0.0 );
-
-        m_elevatorLeftEncoder = m_elevatorLeftSparkMax.getEncoder();
-        m_elevatorLeftEncoder.setPositionConversionFactor(kPositionConversionFactor);
-        m_elevatorLeftEncoder.setPosition( 0.0 );
         
         m_elevatorPIDController = m_elevatorRightSparkMax.getPIDController();
 
@@ -204,6 +197,8 @@ public class Elevator extends SubsystemBase
                 dataLog.publish( "setPointPos", m_setPointPos );
             }
 
+            // For now we will use a zero duty cycle to stop the motor, until we can figure out the
+            // PIDController position hold
             m_elevatorPIDController.setReference( 0.0, CANSparkMax.ControlType.kDutyCycle );
         }
 
@@ -221,7 +216,6 @@ public class Elevator extends SubsystemBase
         {
             limitSwitchActive = !getSimLimitSwitch();
         }
-
 
         if ( !limitSwitchActive )
         {

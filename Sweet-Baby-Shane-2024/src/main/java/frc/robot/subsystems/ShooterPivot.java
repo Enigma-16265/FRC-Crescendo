@@ -169,7 +169,8 @@ public class ShooterPivot extends SubsystemBase
                 dataLog.publish( "setPointPos", m_setPointPos );
             }
 
-            //m_shooterPivotPIDController.setReference( encoderPos, CANSparkMax.ControlType.kPosition );
+            // For now we will use a zero duty cycle to stop the motor, until we can figure out the
+            // PIDController position hold
             m_shooterPivotPIDController.setReference( 0.0, CANSparkMax.ControlType.kDutyCycle );
         }
 
@@ -191,7 +192,7 @@ public class ShooterPivot extends SubsystemBase
         if ( !limitSwitchActive )
         {
             m_homeMode = HomeMode.DRIVE_DOWN;
-            //m_shooterPivotSparkFlex.set( driveDownSpeed );
+
             m_shooterPivotPIDController.setReference( driveDownSpeed, CANSparkMax.ControlType.kDutyCycle );
 
             if ( RobotBase.isSimulation() )
