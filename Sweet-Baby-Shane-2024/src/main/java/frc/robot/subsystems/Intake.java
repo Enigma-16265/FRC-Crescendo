@@ -27,9 +27,11 @@ public class Intake extends SubsystemBase
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
-    // Roll Motor
+    // Motor
     private final CANSparkMax m_intakeWheelSparkMax;
+
     private final RelativeEncoder m_intakeWheelEncoder;
+
     private final SparkPIDController m_intakePIDController;
 
     private double holdPosition = -1.0;

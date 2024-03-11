@@ -28,9 +28,11 @@ public class Shooter extends SubsystemBase
     private static final double kD = 0.0;
 
     // Two fly-wheel motors
-    private final CANSparkFlex       m_shooterFlywheelRightSparkFlex;
-    private final CANSparkFlex       m_shooterFlywheelLeftSparkFlex;
-    private final RelativeEncoder    m_shooterFlywheelEncoder;
+    private final CANSparkFlex m_shooterFlywheelRightSparkFlex;
+    private final CANSparkFlex m_shooterFlywheelLeftSparkFlex;
+
+    private final RelativeEncoder m_shooterFlywheelEncoder;
+
     private final SparkPIDController m_shooterFlywheelPIDController;
 
     private double holdPosition = -1.0;

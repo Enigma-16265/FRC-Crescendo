@@ -45,9 +45,9 @@ public class IntakePivot extends SubsystemBase
     private InputMode   m_inputMode   = InputMode.NOMINAL;
 
     // Motor
-    private final CANSparkMax        m_intakePivotSparkMax;
+    private final CANSparkMax m_intakePivotSparkMax;
 
-    private final RelativeEncoder    m_intakePivotEncoder;
+    private final RelativeEncoder m_intakePivotEncoder;
     
     private final SparkPIDController m_intakePIDController;
 
