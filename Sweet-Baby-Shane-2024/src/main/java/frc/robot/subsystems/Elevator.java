@@ -97,8 +97,8 @@ public class Elevator extends SubsystemBase
         return m_inputMode;
     }
 
-    public static final int kMaxUpperLimitNudges = 1;
-    public static final double kUpeerLimitNudgeFactor = 0.25;
+    public static final int kMaxUpperLimitNudges = 0;
+    public static final double kUpeerLimitNudgeFactor = 0;
     private int m_UpperLimitNudges = 0;
 
     public void lift( double speed, boolean positiveDirection )

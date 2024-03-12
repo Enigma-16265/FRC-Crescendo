@@ -128,6 +128,7 @@ public final class Constants {
     public static final double kDriveDeadband = 0.05;
     public static final double kElevatorDeadband = 0.05;
     public static final double kIntakeDeadband = 0.05;
+    public static final double kIntakePivotDeadband = 0.05;
     public static final double kFlyWheelDeadband = 0.05;
   }
 

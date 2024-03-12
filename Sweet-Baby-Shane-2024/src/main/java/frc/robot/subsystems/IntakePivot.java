@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -30,13 +31,16 @@ public class IntakePivot extends SubsystemBase
     // Can IDs
     public static final int kIntakePivotCanID = 16;
 
-    private static final double kP = 0.1;
+    private static final double kP = 0.0;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
     // Constants
-    public static final double kPositionConversionFactor = 1.0 / 50.0;
-    public static final double kEncoderCloseToZero = 2.0;
+    public static final double kEncoderResolution = 42.0;
+    public static final double kGearRatio         = 25.0;
+    public static final double kCountsPerRev      = kEncoderResolution*kGearRatio;
+
+    public static final double kEncoderCloseToZero = 10.0;
 
     // Switch Channel
     public static final int kLimitSwitchChannel = 1;
@@ -60,9 +64,11 @@ public class IntakePivot extends SubsystemBase
     {
         // Pivot
         m_intakePivotSparkMax = new CANSparkMax(kIntakePivotCanID, MotorType.kBrushless);
+        m_intakePivotSparkMax.setIdleMode( IdleMode.kBrake );
+        m_intakePivotSparkMax.setInverted( true );
 
         m_intakePivotEncoder = m_intakePivotSparkMax.getEncoder();
-        m_intakePivotEncoder.setPositionConversionFactor( kPositionConversionFactor );
+        m_intakePivotEncoder.setPositionConversionFactor( kCountsPerRev );
         m_intakePivotEncoder.setPosition( 0.0 );
         
         m_intakePIDController = m_intakePivotSparkMax.getPIDController();
@@ -86,7 +92,7 @@ public class IntakePivot extends SubsystemBase
         dataLog.publish( "speed", speed );
         dataLog.publish( "posDir", positiveDirection );
 
-        double  encoderPos        = m_intakePivotEncoder.getPosition();
+        double  encoderPos        = m_intakePivotEncoder.getPosition() / kCountsPerRev;
         boolean limitSwitchActive = !m_limitSwitch.get();
 
         if ( RobotBase.isSimulation() )
@@ -201,7 +207,7 @@ public class IntakePivot extends SubsystemBase
 
         dataLog.publish( "homeMode", m_homeMode );
 
-        double  encoderPos = m_intakePivotEncoder.getPosition();
+        double  encoderPos = m_intakePivotEncoder.getPosition() / kCountsPerRev;
         if ( RobotBase.isSimulation() )
         {
             encoderPos = getSimEncoderPos();

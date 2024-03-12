@@ -14,7 +14,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -55,6 +54,8 @@ public class RobotContainer {
     XboxController m_driverController   = new XboxController(OIConstants.kDriverControllerPort);
     XboxController m_mechanicController = new XboxController(OIConstants.kMechanicControllerPort);
 
+    static final boolean enableDriveTrain = false;
+
     // Subsystems
     private final Elevator     elevator     = new Elevator();
     private final Intake       intake       = new Intake();
@@ -65,6 +66,7 @@ public class RobotContainer {
     // Commands
     private final ElevatorCommand     elevatorCommand;
     private final IntakeCommand       intakeCommand;
+    private final IntakePivotCommand  intakePivotCommand;
     private final ShooterCommand      shooterCommand;
     private final ShooterPivotCommand shooterPivotCommand;
 
@@ -79,17 +81,20 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    // Configure default commands
-    m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true, true),
-            m_robotDrive));
+    if ( enableDriveTrain )
+    {
+      // Configure default commands
+      m_robotDrive.setDefaultCommand(
+          // The left stick controls translation of the robot.
+          // Turning is controlled by the X axis of the right stick.
+          new RunCommand(
+              () -> m_robotDrive.drive(
+                  -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+                  -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+                  -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+                  true, true),
+              m_robotDrive));
+    }
             
     elevatorCommand = new ElevatorCommand(
         elevator,
@@ -105,7 +110,19 @@ public class RobotContainer {
                     OIConstants.kIntakeDeadband ) );
         }
     );
+
     intake.setDefaultCommand(intakeCommand);
+
+    intakePivotCommand = new IntakePivotCommand( 
+        intakePivot,
+        () -> {
+          return ( MathUtil.applyDeadband( 
+                    -( m_driverController.getLeftTriggerAxis() - m_driverController.getRightTriggerAxis() ),
+                    OIConstants.kIntakePivotDeadband ) );
+        }
+    );
+
+    // intakePivot.setDefaultCommand(intakePivotCommand);
 
     m_driveLeftBumperTrigger = new JoystickButton( m_driverController, XboxController.Button.kLeftBumper.value );
     m_driveLeftBumperTrigger.onTrue( new IntakePivotLimitCommand( intakePivot, IntakePivotLimitCommand.Behavior.GO ) );
@@ -156,7 +173,7 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kR1.value)
+    new JoystickButton(m_driverController, XboxController.Button.kX.value)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
@@ -211,13 +228,13 @@ public class RobotContainer {
   public void subSystemReset()
   {
       Command elevatorHomingCommand = new ElevatorHomingCommand( elevator );
-      elevatorHomingCommand.schedule();
+      //elevatorHomingCommand.schedule();
 
       Command intakePivotHomingCommand = new IntakePivotHomingCommand( intakePivot );
-      intakePivotHomingCommand.schedule();
+      //intakePivotHomingCommand.schedule();
 
       Command shooterPivotHomingCommand = new ShooterPivotHomingCommand( shooterPivot );
-      shooterPivotHomingCommand.schedule();
+      //shooterPivotHomingCommand.schedule();
   }
 
 }

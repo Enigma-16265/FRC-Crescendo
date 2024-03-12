@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.Map;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -43,6 +44,8 @@ public class Shooter extends SubsystemBase
         // Flywheel
         m_shooterFlywheelRightSparkFlex = new CANSparkFlex(kShooterFlywheelRightCanID, MotorType.kBrushless);
         m_shooterFlywheelLeftSparkFlex = new CANSparkFlex(kShooterFlywheelLeftCanID, MotorType.kBrushless);
+        m_shooterFlywheelRightSparkFlex.setIdleMode( IdleMode.kBrake );
+        m_shooterFlywheelLeftSparkFlex.setIdleMode( IdleMode.kBrake );
 
         m_shooterFlywheelLeftSparkFlex.follow(m_shooterFlywheelRightSparkFlex, true);
 
