@@ -228,13 +228,13 @@ public class RobotContainer {
   public void subSystemReset()
   {
       Command elevatorHomingCommand = new ElevatorHomingCommand( elevator );
-      //elevatorHomingCommand.schedule();
+      // elevatorHomingCommand.schedule();
 
       Command intakePivotHomingCommand = new IntakePivotHomingCommand( intakePivot );
-      //intakePivotHomingCommand.schedule();
+      // intakePivotHomingCommand.schedule();
 
       Command shooterPivotHomingCommand = new ShooterPivotHomingCommand( shooterPivot );
-      //shooterPivotHomingCommand.schedule();
+      shooterPivotHomingCommand.schedule();
   }
 
 }
