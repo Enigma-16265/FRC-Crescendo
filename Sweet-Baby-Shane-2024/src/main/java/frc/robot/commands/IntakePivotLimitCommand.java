@@ -13,7 +13,7 @@ public class IntakePivotLimitCommand  extends Command
     }
 
     //Constants
-    private static final double kDriveSpeed = 0.4;
+    private static final double kDriveSpeed = 0.3;
 
     private final IntakePivot m_intakePivot;
     private final Behavior    m_behavior;

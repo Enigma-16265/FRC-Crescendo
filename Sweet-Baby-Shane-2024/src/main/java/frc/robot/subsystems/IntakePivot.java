@@ -42,6 +42,9 @@ public class IntakePivot extends SubsystemBase
 
     public static final double kEncoderCloseToZero = 10.0;
 
+    public static final double kEncoderRevUpperLimit = 50.0;
+    public static final double kEncoderRevLowerLimit = 5.0;
+
     // Switch Channel
     public static final int kLimitSwitchChannel = 1;
 
@@ -93,7 +96,7 @@ public class IntakePivot extends SubsystemBase
         // dataLog.publish( "posDir", positiveDirection );
 
         double  encoderPos        = m_intakePivotEncoder.getPosition() / kCountsPerRev;
-        boolean limitSwitchActive = !m_limitSwitch.get();
+        boolean limitSwitchActive = (!m_limitSwitch.get() || (encoderPos >= kEncoderRevUpperLimit) || (encoderPos <= kEncoderRevLowerLimit));
 
         if ( RobotBase.isSimulation() )
         {
@@ -101,7 +104,7 @@ public class IntakePivot extends SubsystemBase
             limitSwitchActive = !getSimLimitSwitch();
         }
 
-        // dataLog.publish( "encoderPos", encoderPos );
+        dataLog.publish( "encoderPos", encoderPos );
         // dataLog.publish( "limitSwitch", limitSwitchActive );
 
         if ( ( speed != 0.0 ) && limitSwitchActive )
