@@ -171,6 +171,13 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
+
+  public static final class CameraSettings {
+    public static final int kCameraLength = 320;
+    public static final int kCameraHeight = 180;
+    public static final int kCameraFPS = 15;
+
+  }
 }
 // https://www.youtube.com/@Monkeywithwings
 // https://www.youtube.com/channel/UCG4Ict2Hy22MGgob-TPYXIQ

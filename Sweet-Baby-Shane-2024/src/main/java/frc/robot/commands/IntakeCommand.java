@@ -102,7 +102,7 @@ public class IntakeCommand extends Command
 
         // System.out.println("Color Sensor");
         Color detectedColor = colorSensor.getColor();
-        // dataLog.publish( "color",rgbToHex(detectedColor.red, detectedColor.green, detectedColor.blue) );
+        dataLog.publish( "color",rgbToHex(detectedColor.red, detectedColor.green, detectedColor.blue) );
             
         // Perform color matching
         ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
