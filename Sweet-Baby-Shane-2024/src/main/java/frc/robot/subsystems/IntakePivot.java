@@ -42,8 +42,8 @@ public class IntakePivot extends SubsystemBase
 
     public static final double kEncoderCloseToZero = 10.0;
 
-    public static final double kEncoderRevUpperLimit = 50.0;
-    public static final double kEncoderRevLowerLimit = 5.0;
+    public static final double kEncoderRevUpperLimit = 55.0;
+    public static final double kEncoderRevLowerLimit = 0.0;
 
     // Switch Channel
     public static final int kLimitSwitchChannel = 1;

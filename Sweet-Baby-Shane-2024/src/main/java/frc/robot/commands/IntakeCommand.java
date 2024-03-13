@@ -69,12 +69,14 @@ public class IntakeCommand extends Command
         if ( requestSpeed > 0.0 )
         {
         
-            commandSpeed = m_outSlewRateLimiter.calculate( requestSpeed );
+            // commandSpeed = m_outSlewRateLimiter.calculate( requestSpeed );
+            commandSpeed = 1.0;
         
         } else if ( requestSpeed < 0.0 )
         {
 
-            commandSpeed = m_inSlewRateLimiter.calculate( requestSpeed );
+            // commandSpeed = m_inSlewRateLimiter.calculate( requestSpeed );
+            commandSpeed = -0.3;
 
         }
         else
@@ -102,7 +104,7 @@ public class IntakeCommand extends Command
 
         // System.out.println("Color Sensor");
         Color detectedColor = colorSensor.getColor();
-        dataLog.publish( "color",rgbToHex(detectedColor.red, detectedColor.green, detectedColor.blue) );
+        // dataLog.publish( "color",rgbToHex(detectedColor.red, detectedColor.green, detectedColor.blue) );
             
         // Perform color matching
         ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
