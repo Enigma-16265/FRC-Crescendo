@@ -158,8 +158,8 @@ public class MAXSwerveModule
   public void setDesiredState(SwerveModuleState desiredState)
   {
 
-    m_dataLog.publish( "desiredState.angle_deg", desiredState.angle.getDegrees() );
-    m_dataLog.publish( "desiredState.speed_mps", desiredState.speedMetersPerSecond );
+    // m_dataLog.publish( "desiredState.angle_deg", desiredState.angle.getDegrees() );
+    // m_dataLog.publish( "desiredState.speed_mps", desiredState.speedMetersPerSecond );
 
     // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();

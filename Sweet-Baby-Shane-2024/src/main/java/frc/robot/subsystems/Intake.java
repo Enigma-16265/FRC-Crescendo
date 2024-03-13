@@ -60,7 +60,7 @@ public class Intake extends SubsystemBase
 
     public void roll( double speed )
     {
-        dataLog.publish( "speed", speed );
+        // dataLog.publish( "speed", speed );
 
         if ( speed != 0.0 )
         {
@@ -70,7 +70,7 @@ public class Intake extends SubsystemBase
             if ( holdPosition >= 0.0 )
             {
                 holdPosition = -1.0;
-                dataLog.publish( "holdPosition", holdPosition );
+                // dataLog.publish( "holdPosition", holdPosition );
             }
         }
         else
@@ -79,7 +79,7 @@ public class Intake extends SubsystemBase
             if ( holdPosition < 0.0 )
             {
                 holdPosition = m_intakeWheelEncoder.getPosition();
-                dataLog.publish( "holdPosition", holdPosition );
+                // dataLog.publish( "holdPosition", holdPosition );
             }
 
             m_intakePIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );

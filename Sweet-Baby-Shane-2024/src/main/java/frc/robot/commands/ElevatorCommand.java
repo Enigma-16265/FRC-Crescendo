@@ -58,8 +58,8 @@ public class ElevatorCommand extends Command
 
         double commandSpeed = m_slewRateLimiter.calculate( requestSpeed );
 
-        dataLog.publish( "requestSpeed", requestSpeed );
-        dataLog.publish( "commandSpeed", commandSpeed );
+        // dataLog.publish( "requestSpeed", requestSpeed );
+        // dataLog.publish( "commandSpeed", commandSpeed );
 
         m_elevator.lift( commandSpeed, positiveDirection );
 

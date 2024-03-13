@@ -92,8 +92,8 @@ public class ShooterPivot extends SubsystemBase
 
     public void slew( double speed, boolean positiveDirection )
     {
-        dataLog.publish( "speed", speed );
-        dataLog.publish( "posDir", positiveDirection );
+        // dataLog.publish( "speed", speed );
+        // dataLog.publish( "posDir", positiveDirection );
 
         double  encoderPos        = m_shooterPivotEncoder.getPosition();
         boolean limitSwitchActive = !m_limitSwitch.get();
@@ -104,8 +104,8 @@ public class ShooterPivot extends SubsystemBase
             limitSwitchActive = !getSimLimitSwitch();
         }
 
-        dataLog.publish( "encoderPos", encoderPos );
-        dataLog.publish( "limitSwitch", limitSwitchActive );
+        // dataLog.publish( "encoderPos", encoderPos );
+        // dataLog.publish( "limitSwitch", limitSwitchActive );
 
         if ( ( speed != 0.0 ) && limitSwitchActive )
         {
@@ -135,7 +135,7 @@ public class ShooterPivot extends SubsystemBase
             m_inputMode = InputMode.NOMINAL;
         }
 
-        dataLog.publish( "inputMode", m_inputMode );
+        // dataLog.publish( "inputMode", m_inputMode );
         
         if ( speed != 0.0 )
         {
@@ -145,8 +145,8 @@ public class ShooterPivot extends SubsystemBase
                 m_controlMode = ControlMode.ACTIVE;
                 m_setPointPos = 0.0;
 
-                dataLog.publish( "controlMode", m_controlMode );
-                dataLog.publish( "setPointPos", m_setPointPos );
+                // dataLog.publish( "controlMode", m_controlMode );
+                // dataLog.publish( "setPointPos", m_setPointPos );
             }
 
             m_shooterPivotPIDController.setReference( speed, CANSparkMax.ControlType.kDutyCycle );
@@ -165,8 +165,8 @@ public class ShooterPivot extends SubsystemBase
                 m_controlMode = ControlMode.HOLD;
                 m_setPointPos = encoderPos;
 
-                dataLog.publish( "controlMode", m_controlMode );
-                dataLog.publish( "setPointPos", m_setPointPos );
+                // dataLog.publish( "controlMode", m_controlMode );
+                // dataLog.publish( "setPointPos", m_setPointPos );
             }
 
             // For now we will use a zero duty cycle to stop the motor, until we can figure out the
@@ -208,7 +208,7 @@ public class ShooterPivot extends SubsystemBase
             m_shooterPivotPIDController.setReference( 0.0, CANSparkMax.ControlType.kPosition );
         }
 
-        dataLog.publish( "homeMode", m_homeMode );
+        // dataLog.publish( "homeMode", m_homeMode );
 
         double  encoderPos = m_shooterPivotEncoder.getPosition();
         if ( RobotBase.isSimulation() )
@@ -216,7 +216,7 @@ public class ShooterPivot extends SubsystemBase
             encoderPos = getSimEncoderPos();
         }
 
-        dataLog.publish( "encoderPos", encoderPos );
+        // dataLog.publish( "encoderPos", encoderPos );
 
     }
 
@@ -226,7 +226,7 @@ public class ShooterPivot extends SubsystemBase
     private void updateSimEncoder( double speed )
     {
         m_simEncoderPos += speed;
-        dataLog.publish( "simEncoderPos", m_simEncoderPos );
+        // dataLog.publish( "simEncoderPos", m_simEncoderPos );
     }
 
     private boolean getSimLimitSwitch()

@@ -57,8 +57,8 @@ public class IntakePivotCommand extends Command
 
         double commandSpeed = m_slewRateLimiter.calculate( requestSpeed );
 
-        dataLog.publish( "requestSpeed", requestSpeed );
-        dataLog.publish( "commandSpeed", commandSpeed );
+        // dataLog.publish( "requestSpeed", requestSpeed );
+        // dataLog.publish( "commandSpeed", commandSpeed );
 
         m_intakePivot.slew( commandSpeed, positiveDirection );
 

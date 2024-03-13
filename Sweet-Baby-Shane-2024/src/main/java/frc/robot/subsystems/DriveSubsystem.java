@@ -140,9 +140,9 @@ public class DriveSubsystem extends SubsystemBase
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit)
   {
 
-    dataLog.publish( "xSpeed", xSpeed );
-    dataLog.publish( "ySpeed", ySpeed );
-    dataLog.publish( "rot",    rot );
+    // dataLog.publish( "xSpeed", xSpeed );
+    // dataLog.publish( "ySpeed", ySpeed );
+    // dataLog.publish( "rot",    rot );
     
     double xSpeedCommanded;
     double ySpeedCommanded;
@@ -195,18 +195,18 @@ public class DriveSubsystem extends SubsystemBase
       m_currentRotation = rot;
     }
 
-    dataLog.publish( "xSpeedCommanded", xSpeedCommanded );
-    dataLog.publish( "ySpeedCommanded", ySpeedCommanded );
-    dataLog.publish( "currentRotation", m_currentRotation );
+    // dataLog.publish( "xSpeedCommanded", xSpeedCommanded );
+    // dataLog.publish( "ySpeedCommanded", ySpeedCommanded );
+    // dataLog.publish( "currentRotation", m_currentRotation );
 
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
-    dataLog.publish( "xSpeedDelivered", xSpeedDelivered );
-    dataLog.publish( "ySpeedDelivered", ySpeedDelivered );
-    dataLog.publish( "rotDelivered", rotDelivered );
+    // dataLog.publish( "xSpeedDelivered", xSpeedDelivered );
+    // dataLog.publish( "ySpeedDelivered", ySpeedDelivered );
+    // dataLog.publish( "rotDelivered", rotDelivered );
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative

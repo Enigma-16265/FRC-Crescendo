@@ -67,7 +67,7 @@ public class Shooter extends SubsystemBase
 
     public void spin( double speed )
     {
-        dataLog.publish( "speed", speed );
+        // dataLog.publish( "speed", speed );
 
         if ( speed != 0.0 )
         {
@@ -77,7 +77,7 @@ public class Shooter extends SubsystemBase
             if ( holdPosition >= 0.0 )
             {
                 holdPosition = -1.0;
-                dataLog.publish( "holdPosition", holdPosition );
+                // dataLog.publish( "holdPosition", holdPosition );
             }
         }
         else
@@ -86,7 +86,7 @@ public class Shooter extends SubsystemBase
             if ( holdPosition < 0.0 )
             {
                 holdPosition = m_shooterFlywheelEncoder.getPosition();
-                dataLog.publish( "holdPosition", holdPosition );
+                // dataLog.publish( "holdPosition", holdPosition );
             }
 
             m_shooterFlywheelPIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
