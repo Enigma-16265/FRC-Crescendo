@@ -14,6 +14,8 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.util.Color;
+import frc.logging.DataNetworkTableLog;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -39,6 +41,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.List;
+import java.util.Map;
+
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorSensorV3;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -54,7 +61,7 @@ public class RobotContainer {
     XboxController m_driverController   = new XboxController(OIConstants.kDriverControllerPort);
     XboxController m_mechanicController = new XboxController(OIConstants.kMechanicControllerPort);
 
-    static final boolean enableDriveTrain = false;
+    static final boolean enableDriveTrain = true;
 
     // Subsystems
     private final Elevator     elevator     = new Elevator();
@@ -92,7 +99,7 @@ public class RobotContainer {
                   -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                   -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                   -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                  true, true),
+                  false, true),
               m_robotDrive));
     }
             
@@ -108,7 +115,8 @@ public class RobotContainer {
           return ( MathUtil.applyDeadband( 
                     ( m_driverController.getLeftTriggerAxis() - m_driverController.getRightTriggerAxis() ),
                     OIConstants.kIntakeDeadband ) );
-        }
+        },
+        intakePivot
     );
 
     intake.setDefaultCommand(intakeCommand);
@@ -234,7 +242,7 @@ public class RobotContainer {
       // intakePivotHomingCommand.schedule();
 
       Command shooterPivotHomingCommand = new ShooterPivotHomingCommand( shooterPivot );
-      shooterPivotHomingCommand.schedule();
+      //shooterPivotHomingCommand.schedule();
   }
 
 }
