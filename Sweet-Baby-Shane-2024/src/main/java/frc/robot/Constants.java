@@ -97,22 +97,22 @@ public final class Constants {
     public static final double kTurningEncoderPositionFactor = (2 * Math.PI); // radians
     public static final double kTurningEncoderVelocityFactor = (2 * Math.PI) / 60.0; // radians per second
 
-    public static final double kTurningEncoderPositionPIDMinInput = 0; // radians
+    public static final double kTurningEncoderPositionPIDMinInput = 0.0; // radians
     public static final double kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor; // radians
 
     public static final double kDrivingP = 0.04;
-    public static final double kDrivingI = 0;
-    public static final double kDrivingD = 0;
+    public static final double kDrivingI = 0.0;
+    public static final double kDrivingD = 0.0;
     public static final double kDrivingFF = 1 / kDriveWheelFreeSpeedRps;
-    public static final double kDrivingMinOutput = -1;
-    public static final double kDrivingMaxOutput = 1;
+    public static final double kDrivingMinOutput = -1.0;
+    public static final double kDrivingMaxOutput = 1.0;
 
-    public static final double kTurningP = 1;
-    public static final double kTurningI = 0;
-    public static final double kTurningD = 0;
-    public static final double kTurningFF = 0;
-    public static final double kTurningMinOutput = -1;
-    public static final double kTurningMaxOutput = 1;
+    public static final double kTurningP = 1.0;
+    public static final double kTurningI = 0.0;
+    public static final double kTurningD = 0.0;
+    public static final double kTurningFF = 0.0;
+    public static final double kTurningMinOutput = -1.0;
+    public static final double kTurningMaxOutput = 1.0;
 
     public static final IdleMode kDrivingMotorIdleMode = IdleMode.kCoast;
     public static final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
@@ -125,11 +125,11 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kMechanicControllerPort = 1;
 
-    public static final double kDriveDeadband = 0.08;
-    public static final double kElevatorDeadband = 0.08;
-    public static final double kIntakeDeadband = 0.08;
-    public static final double kIntakePivotDeadband = 0.08;
-    public static final double kFlyWheelDeadband = 0.08;
+    public static final double kDriveDeadband = 0.1;
+    public static final double kElevatorDeadband = 0.1;
+    public static final double kIntakeDeadband = 0.1;
+    public static final double kIntakePivotDeadband = 0.1;
+    public static final double kFlyWheelDeadband = 0.1;
   }
 
   public static final class ControllerConstants
@@ -154,14 +154,14 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 2;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+    public static final double kMaxSpeedMetersPerSecond = 2.0;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 2.0;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
-    public static final double kPXController = 1;
-    public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
+    public static final double kPXController = 1.0;
+    public static final double kPYController = 1.0;
+    public static final double kPThetaController = 1.0;
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
@@ -169,7 +169,7 @@ public final class Constants {
   }
 
   public static final class NeoMotorConstants {
-    public static final double kFreeSpeedRpm = 5676;
+    public static final double kFreeSpeedRpm = 5676.0;
   }
 
   public static final class CameraSettings {
