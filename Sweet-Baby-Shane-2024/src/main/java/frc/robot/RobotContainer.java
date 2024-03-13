@@ -146,7 +146,7 @@ public class RobotContainer {
 
           if (m_mechanicController.getYButton() )
           {
-            speed = 0.8;
+            speed = 1.0;
           }
           else if ( m_mechanicController.getXButton() )
           {

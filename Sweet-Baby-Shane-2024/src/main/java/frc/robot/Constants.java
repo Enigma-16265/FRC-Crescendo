@@ -27,10 +27,10 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 1.5;
+    public static final double kMaxSpeedMetersPerSecond = 2.0;
     public static final double kMaxAngularSpeed = 1 * Math.PI; // radians per second
 
-    public static final double kDirectionSlewRate = 1.2; // radians per second
+    public static final double kDirectionSlewRate = 0.8; // radians per second
     public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
@@ -125,11 +125,11 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kMechanicControllerPort = 1;
 
-    public static final double kDriveDeadband = 0.05;
-    public static final double kElevatorDeadband = 0.05;
-    public static final double kIntakeDeadband = 0.05;
-    public static final double kIntakePivotDeadband = 0.05;
-    public static final double kFlyWheelDeadband = 0.05;
+    public static final double kDriveDeadband = 0.08;
+    public static final double kElevatorDeadband = 0.08;
+    public static final double kIntakeDeadband = 0.08;
+    public static final double kIntakePivotDeadband = 0.08;
+    public static final double kFlyWheelDeadband = 0.08;
   }
 
   public static final class ControllerConstants
@@ -154,8 +154,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kMaxSpeedMetersPerSecond = 2;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 2;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
