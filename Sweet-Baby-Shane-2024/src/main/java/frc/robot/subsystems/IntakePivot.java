@@ -31,6 +31,7 @@ public class IntakePivot extends SubsystemBase
     // Can IDs
     public static final int kIntakePivotCanID = 16;
 
+    // PID
     private static final double kP = 0.0;
     private static final double kI = 0.0;
     private static final double kD = 0.0;

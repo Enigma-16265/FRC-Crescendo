@@ -41,7 +41,9 @@ public class ShooterPivot extends SubsystemBase
     private static final double kD = 0.0;
 
     // Constants
-    public static final double kPositionConversionFactor = 1.0 / 36.0;
+    public static final double kEncoderResolution = 7168.0;
+    public static final double kGearRatio         = 36.0;
+    public static final double kCountsPerRev      = kEncoderResolution*kGearRatio;
     public static final double kEncoderCloseToZero = 2.0;
 
     // Switch Channel
@@ -71,7 +73,7 @@ public class ShooterPivot extends SubsystemBase
         m_shooterPivotSparkFlex.setIdleMode( IdleMode.kBrake );
 
         m_shooterPivotEncoder = m_shooterPivotSparkFlex.getEncoder();
-        m_shooterPivotEncoder.setPositionConversionFactor( kPositionConversionFactor );
+        m_shooterPivotEncoder.setPositionConversionFactor( kCountsPerRev );
         m_shooterPivotEncoder.setPosition( 0.0 );
         
         m_shooterPivotPIDController = m_shooterPivotSparkFlex.getPIDController();
@@ -95,7 +97,7 @@ public class ShooterPivot extends SubsystemBase
         // dataLog.publish( "speed", speed );
         // dataLog.publish( "posDir", positiveDirection );
 
-        double  encoderPos        = m_shooterPivotEncoder.getPosition();
+        double  encoderPos        = m_shooterPivotEncoder.getPosition() / kCountsPerRev;
         boolean limitSwitchActive = !m_limitSwitch.get();
 
         if ( RobotBase.isSimulation() )

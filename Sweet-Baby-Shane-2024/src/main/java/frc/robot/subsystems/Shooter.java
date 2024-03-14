@@ -24,9 +24,15 @@ public class Shooter extends SubsystemBase
     public static final int kShooterFlywheelRightCanID = 14;
     public static final int kShooterFlywheelLeftCanID = 13;
     
+    // PID
     private static final double kP = 0.0;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
+
+    // Constants
+    public static final double kEncoderResolution = 7168.0;
+    public static final double kGearRatio         = 36.0;
+    public static final double kCountsPerRev      = kEncoderResolution*kGearRatio;
 
     // Two fly-wheel motors
     private final CANSparkFlex m_shooterFlywheelRightSparkFlex;
@@ -50,7 +56,7 @@ public class Shooter extends SubsystemBase
         m_shooterFlywheelLeftSparkFlex.follow(m_shooterFlywheelRightSparkFlex, true);
 
         m_shooterFlywheelEncoder = m_shooterFlywheelRightSparkFlex.getEncoder();
-        m_shooterFlywheelEncoder.setPositionConversionFactor( 1.0 / 36.0 );
+        m_shooterFlywheelEncoder.setPositionConversionFactor( kCountsPerRev );
         m_shooterFlywheelEncoder.setPosition( 0.0 );
         
         m_shooterFlywheelPIDController = m_shooterFlywheelRightSparkFlex.getPIDController();
@@ -85,7 +91,7 @@ public class Shooter extends SubsystemBase
 
             if ( holdPosition < 0.0 )
             {
-                holdPosition = m_shooterFlywheelEncoder.getPosition();
+                holdPosition = m_shooterFlywheelEncoder.getPosition() / kCountsPerRev;
                 // dataLog.publish( "holdPosition", holdPosition );
             }
 

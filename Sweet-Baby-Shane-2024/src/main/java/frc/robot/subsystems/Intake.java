@@ -22,6 +22,11 @@ public class Intake extends SubsystemBase
     // Can IDs
     public static final int kIntakeWheelCanID = 15;
 
+    // Constants
+    public static final double kEncoderResolution = 42.0;
+    public static final double kGearRatio         = 3.0;
+    public static final double kCountsPerRev      = kEncoderResolution*kGearRatio;
+
     // PID
     private static final double kP = 0.0;
     private static final double kI = 0.0;
@@ -43,7 +48,7 @@ public class Intake extends SubsystemBase
         m_intakeWheelSparkMax = new CANSparkMax(kIntakeWheelCanID, MotorType.kBrushless);
 
         m_intakeWheelEncoder = m_intakeWheelSparkMax.getEncoder();
-        m_intakeWheelEncoder.setPositionConversionFactor( 1.0 / 3.0 );
+        m_intakeWheelEncoder.setPositionConversionFactor( kCountsPerRev );
         m_intakeWheelEncoder.setPosition( 0.0 );
         
         m_intakePIDController = m_intakeWheelSparkMax.getPIDController();
@@ -78,7 +83,7 @@ public class Intake extends SubsystemBase
 
             if ( holdPosition < 0.0 )
             {
-                holdPosition = m_intakeWheelEncoder.getPosition();
+                holdPosition = m_intakeWheelEncoder.getPosition() / kCountsPerRev;
                 // dataLog.publish( "holdPosition", holdPosition );
             }
 

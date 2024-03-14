@@ -41,9 +41,11 @@ public class Elevator extends SubsystemBase
     private static final double kD = 0.0;
 
     // Constants
-    public static final double kEncoderCloseToZero = 2.0;
-    public static final double kPositionConversionFactor = 1.0/25.0;
-    public static final double kPullyDiamaterM = 38.82/1000;
+    public static final double kEncoderCloseToZero       = 2.0;
+    public static final double kPullyDiamaterM           = 38.82/1000;
+    public static final double kEncoderResolution        = 42.0;
+    public static final double kGearRatio                = 25.0;
+    public static final double kCountsPerRev = kEncoderResolution*kGearRatio;
 
     // Switch Channel25
     public static final int kLimitSwitchChannel = 0;
@@ -77,7 +79,7 @@ public class Elevator extends SubsystemBase
         m_elevatorLeftSparkMax.follow(m_elevatorRightSparkMax );
 
         m_elevatorLiftEncoder = m_elevatorRightSparkMax.getEncoder();
-        m_elevatorLiftEncoder.setPositionConversionFactor(kPositionConversionFactor);
+        m_elevatorLiftEncoder.setPositionConversionFactor(kCountsPerRev);
         m_elevatorLiftEncoder.setPosition( 0.0 );
         
         m_elevatorPIDController = m_elevatorRightSparkMax.getPIDController();
@@ -106,7 +108,7 @@ public class Elevator extends SubsystemBase
         // dataLog.publish( "speed", speed );
         // dataLog.publish( "posDir", positiveDirection );
 
-        double  encoderPos        = m_elevatorLiftEncoder.getPosition();
+        double  encoderPos        = m_elevatorLiftEncoder.getPosition() / kCountsPerRev;
         boolean limitSwitchActive = !m_limitSwitch.get();
 
         if ( RobotBase.isSimulation() )
@@ -238,7 +240,7 @@ public class Elevator extends SubsystemBase
 
         // dataLog.publish( "homeMode", m_homeMode );
 
-        double  encoderPos = m_elevatorLiftEncoder.getPosition();
+        double  encoderPos = m_elevatorLiftEncoder.getPosition() / kCountsPerRev;
         if ( RobotBase.isSimulation() )
         {
             encoderPos = getSimEncoderPos();
