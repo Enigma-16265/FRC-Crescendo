@@ -28,6 +28,7 @@ import frc.robot.commands.ElevatorHomingCommand;
 import frc.robot.commands.ShooterPivotCommand;
 import frc.robot.commands.ShooterPivotHomingCommand;
 import frc.robot.commands.IntakePivotLimitCommand;
+import frc.robot.commands.IntakeSlowReverseCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -76,10 +77,13 @@ public class RobotContainer {
     private final IntakePivotCommand  intakePivotCommand;
     private final ShooterCommand      shooterCommand;
     private final ShooterPivotCommand shooterPivotCommand;
+    private final IntakeSlowReverseCommand   intakeSlowReverseCommand;
 
     // Driver Triggers
     private final Trigger m_driveLeftBumperTrigger;
     private final Trigger m_driverRightBumperTrigger;
+    
+    private final Trigger m_driverAButton;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -169,6 +173,11 @@ public class RobotContainer {
     );
     shooterPivot.setDefaultCommand( shooterPivotCommand );
 
+    intakeSlowReverseCommand = new IntakeSlowReverseCommand( intake );
+
+    m_driverAButton = new JoystickButton( m_driverController, XboxController.Button.kA.value );
+    m_driverAButton.whileTrue( intakeSlowReverseCommand );
+    
   }
 
   /**
