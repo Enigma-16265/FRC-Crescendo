@@ -105,7 +105,7 @@ public class IntakePivot extends SubsystemBase
             limitSwitchActive = !getSimLimitSwitch();
         }
 
-        dataLog.publish( "encoderPos", encoderPos );
+        // dataLog.publish( "encoderPos", encoderPos );
         // dataLog.publish( "limitSwitch", limitSwitchActive );
 
         if ( ( speed != 0.0 ) && limitSwitchActive )
