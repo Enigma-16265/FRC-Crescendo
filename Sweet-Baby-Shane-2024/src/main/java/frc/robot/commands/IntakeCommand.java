@@ -76,7 +76,7 @@ public class IntakeCommand extends Command
         {
 
             // commandSpeed = m_inSlewRateLimiter.calculate( requestSpeed );
-            commandSpeed = -0.6;
+            commandSpeed = -0.4;
 
         }
         else

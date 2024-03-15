@@ -83,7 +83,7 @@ public class RobotContainer {
     private final Trigger m_driveLeftBumperTrigger;
     private final Trigger m_driverRightBumperTrigger;
     
-    private final Trigger m_driverAButton;
+    private final Trigger m_mechanicsAButton;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -175,8 +175,8 @@ public class RobotContainer {
 
     intakeSlowReverseCommand = new IntakeSlowReverseCommand( intake );
 
-    m_driverAButton = new JoystickButton( m_driverController, XboxController.Button.kA.value );
-    m_driverAButton.whileTrue( intakeSlowReverseCommand );
+    m_mechanicsAButton = new JoystickButton( m_mechanicController, XboxController.Button.kA.value );
+    m_mechanicsAButton.whileTrue( intakeSlowReverseCommand );
     
   }
 
@@ -210,12 +210,13 @@ public class RobotContainer {
         .setKinematics(DriveConstants.kDriveKinematics);
 
     // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+    Trajectory autoTrajectory = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(0, 2), new Translation2d(0, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
+        
+        List.of(new Translation2d(0, 2.5), new Translation2d(0, 0)),
+        
+        // End x,y meters from ahead of where we started, facing forward
         new Pose2d(0, 1, new Rotation2d(0)),
         config);
 
@@ -224,7 +225,7 @@ public class RobotContainer {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
+        autoTrajectory,
         m_robotDrive::getPose, // Functional interface to feed supplier
         DriveConstants.kDriveKinematics,
 
@@ -236,7 +237,7 @@ public class RobotContainer {
         m_robotDrive);
 
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    m_robotDrive.resetOdometry(autoTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
