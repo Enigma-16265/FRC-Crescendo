@@ -92,4 +92,9 @@ public class Intake extends SubsystemBase
 
     }
 
+    public void stop() 
+    {
+        m_intakeWheelSparkMax.set( 0.0 );
+    }
+
 }

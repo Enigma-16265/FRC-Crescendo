@@ -252,4 +252,9 @@ public class IntakePivot extends SubsystemBase
         return m_simEncoderPos;
     }
 
+    public void stop() 
+    {
+        m_intakePivotSparkMax.set( 0.0 );
+    }
+
 }

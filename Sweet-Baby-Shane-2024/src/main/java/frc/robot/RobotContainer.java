@@ -27,6 +27,7 @@ import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorHomingCommand;
 import frc.robot.commands.ShooterPivotCommand;
 import frc.robot.commands.ShooterPivotHomingCommand;
+import frc.robot.commands.autonomous.AutoShootCommand;
 import frc.robot.commands.IntakePivotLimitCommand;
 import frc.robot.commands.IntakeSlowReverseCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -36,8 +37,11 @@ import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -55,6 +59,7 @@ import com.revrobotics.ColorSensorV3;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
@@ -89,8 +94,10 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    
     // Configure the button bindings
     configureButtonBindings();
+    
 
     if ( enableDriveTrain )
     {
@@ -175,7 +182,7 @@ public class RobotContainer {
 
     intakeSlowReverseCommand = new IntakeSlowReverseCommand( intake );
 
-    m_mechanicsAButton = new JoystickButton( m_mechanicController, XboxController.Button.kA.value );
+    m_mechanicsAButton = new JoystickButton( m_mechanicController, XboxController.Button.kB.value );
     m_mechanicsAButton.whileTrue( intakeSlowReverseCommand );
     
   }
