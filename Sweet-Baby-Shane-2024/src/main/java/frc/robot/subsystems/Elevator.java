@@ -43,6 +43,12 @@ public class Elevator extends SubsystemBase
     // Constants
     public static final double kEncoderCloseToZero       = 2.0;
     public static final double kPullyDiamaterM           = 38.82/1000;
+
+    // Elevator Encoder limits
+    public static final double kEncoderRevUpperLimit = 10000.0;
+    public static final double kEncoderRevLowerLimit = 0.0;
+
+    //Encoder Math
     public static final double kEncoderResolution        = 42.0;
     public static final double kGearRatio                = 25.0;
     public static final double kCountsPerRev = kEncoderResolution*kGearRatio;
@@ -114,7 +120,7 @@ public class Elevator extends SubsystemBase
         if ( RobotBase.isSimulation() )
         {
             encoderPos        = getSimEncoderPos();
-            limitSwitchActive = !getSimLimitSwitch();
+            limitSwitchActive = (!getSimLimitSwitch() || (encoderPos >= kEncoderRevUpperLimit) || (encoderPos <= kEncoderRevLowerLimit));
         }
 
         // dataLog.publish( "encoderPos", encoderPos );
@@ -214,7 +220,8 @@ public class Elevator extends SubsystemBase
         
         double driveDownSpeed = -1.0 * Math.abs( speed );
 
-        boolean limitSwitchActive = !m_limitSwitch.get();
+        double  encoderPos        = m_elevatorLiftEncoder.getPosition() / kCountsPerRev;
+        boolean limitSwitchActive = (!m_limitSwitch.get() || (encoderPos >= kEncoderRevUpperLimit) || (encoderPos <= kEncoderRevLowerLimit));
         if ( RobotBase.isSimulation() )
         {
             limitSwitchActive = !getSimLimitSwitch();
@@ -240,7 +247,6 @@ public class Elevator extends SubsystemBase
 
         // dataLog.publish( "homeMode", m_homeMode );
 
-        double  encoderPos = m_elevatorLiftEncoder.getPosition() / kCountsPerRev;
         if ( RobotBase.isSimulation() )
         {
             encoderPos = getSimEncoderPos();
