@@ -50,7 +50,11 @@ public class MAXSwerveModule
       new DataNetworkTableLog( 
         String.format("Subsystems.MAXSwerveModule_%d_%d", drivingCANId, turningCANId ),
         Map.of( "desiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "desiredState.speed_mps", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+                "desiredState.speed_mps", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "correctedDesiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "correctedDesiredState.speed_mps", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "optimizedDesiredState.speed_mps", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "optimizedDesiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
     m_drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
     m_turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
@@ -158,17 +162,23 @@ public class MAXSwerveModule
   public void setDesiredState(SwerveModuleState desiredState)
   {
 
-    // m_dataLog.publish( "desiredState.angle_deg", desiredState.angle.getDegrees() );
-    // m_dataLog.publish( "desiredState.speed_mps", desiredState.speedMetersPerSecond );
+    m_dataLog.publish( "desiredState.angle_deg", desiredState.angle.getDegrees() );
+    m_dataLog.publish( "desiredState.speed_mps", desiredState.speedMetersPerSecond );
 
     // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
     correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
 
+    m_dataLog.publish( "correctedDesiredState.angle_deg", correctedDesiredState.angle.getDegrees() );
+    m_dataLog.publish( "correctedDesiredState.speed_mps", correctedDesiredState.speedMetersPerSecond );
+
     // Optimize the reference state to avoid spinning further than 90 degrees.
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedDesiredState,
         new Rotation2d(m_turningEncoder.getPosition()));
+
+    m_dataLog.publish( "optimizedDesiredState.angle_deg", optimizedDesiredState.angle.getDegrees() );
+    m_dataLog.publish( "optimizedDesiredState.speed_mps", optimizedDesiredState.speedMetersPerSecond );
 
     // Command driving and turning SPARKS MAX towards their respective setpoints.
     m_drivingPIDController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);

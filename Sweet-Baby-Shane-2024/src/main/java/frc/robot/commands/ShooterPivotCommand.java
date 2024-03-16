@@ -17,7 +17,7 @@ public class ShooterPivotCommand extends Command
             Map.of( "requestSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                     "commandSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
-    private static final double kLiftSlewRateLimit = 0.1;
+    private static final double kLiftSlewRateLimit = 0.5;
     
     private final ShooterPivot     m_shooterPivot;
     private final Supplier<Double> m_speedSupplier;
