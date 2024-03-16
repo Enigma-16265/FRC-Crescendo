@@ -54,7 +54,9 @@ public class MAXSwerveModule
                 "correctedDesiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "correctedDesiredState.speed_mps", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "optimizedDesiredState.speed_mps", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "optimizedDesiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+                "optimizedDesiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "appliedOutput", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "current", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
     m_drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
     m_turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
@@ -71,6 +73,7 @@ public class MAXSwerveModule
     m_turningPIDController = m_turningSparkMax.getPIDController();
     m_drivingPIDController.setFeedbackDevice(m_drivingEncoder);
     m_turningPIDController.setFeedbackDevice(m_turningEncoder);
+    
 
     // Apply position and velocity conversion factors for the driving encoder. The
     // native units for position and velocity are rotations and RPM, respectively,
@@ -183,6 +186,9 @@ public class MAXSwerveModule
     // Command driving and turning SPARKS MAX towards their respective setpoints.
     m_drivingPIDController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
     m_turningPIDController.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
+
+    m_dataLog.publish( "appliedOutput", m_drivingSparkMax.getAppliedOutput() );
+    m_dataLog.publish( "current", m_drivingSparkMax.getOutputCurrent() );
 
     m_desiredState = desiredState;
   }

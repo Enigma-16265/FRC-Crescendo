@@ -199,8 +199,8 @@ public class DriveSubsystem extends SubsystemBase
     dataLog.publish( "currentRotation", m_currentRotation );
 
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond * 3;
-    double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond * 3;
+    double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond * 15;
+    double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond * 15;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
     dataLog.publish( "xSpeedDelivered", xSpeedDelivered );
