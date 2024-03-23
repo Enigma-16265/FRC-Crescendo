@@ -127,7 +127,7 @@ public class IntakeCommand extends Command
 
             System.out.println("Detected Orange");
             Command sensorIntakePivot = new IntakePivotLimitCommand( m_intakePivot, IntakePivotLimitCommand.Behavior.STOW );
-            // sensorIntakePivot.schedule();
+            sensorIntakePivot.schedule();
         }
 
     }

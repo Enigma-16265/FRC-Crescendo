@@ -38,7 +38,10 @@ public class DriveSubsystem extends SubsystemBase
                 "currentRotation", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "xSpeedDelivered", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "ySpeedDelivered", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "rotDelivered",    DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+                "rotDelivered",    DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+                "heading",        DataNetworkTableLog.COLUMN_TYPE.DOUBLE
+                // "turnRate",        DataNetworkTableLog.COLUMN_TYPE.DOUBLE
+              ) );
 
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
@@ -140,9 +143,11 @@ public class DriveSubsystem extends SubsystemBase
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit)
   {
 
-    dataLog.publish( "xSpeed", xSpeed );
-    dataLog.publish( "ySpeed", ySpeed );
-    dataLog.publish( "rot",    rot );
+    // dataLog.publish( "xSpeed",    xSpeed );
+    // dataLog.publish( "ySpeed",    ySpeed );
+    // dataLog.publish( "rot",       rot );
+    // dataLog.publish( "heading", getHeading() );
+    // dataLog.publish( "turnRate", getTurnRate() );
     
     double xSpeedCommanded;
     double ySpeedCommanded;
@@ -194,22 +199,22 @@ public class DriveSubsystem extends SubsystemBase
       m_currentRotation = rot;
     }
 
-    dataLog.publish( "xSpeedCommanded", xSpeedCommanded );
-    dataLog.publish( "ySpeedCommanded", ySpeedCommanded );
-    dataLog.publish( "currentRotation", m_currentRotation );
+    // dataLog.publish( "xSpeedCommanded", xSpeedCommanded );
+    // dataLog.publish( "ySpeedCommanded", ySpeedCommanded );
+    // dataLog.publish( "currentRotation", m_currentRotation );
 
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;// * 15;
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;// * 15;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
-    dataLog.publish( "xSpeedDelivered", xSpeedDelivered );
-    dataLog.publish( "ySpeedDelivered", ySpeedDelivered );
-    dataLog.publish( "rotDelivered", rotDelivered );
+    // dataLog.publish( "xSpeedDelivered", -xSpeedDelivered );
+    // dataLog.publish( "ySpeedDelivered", -ySpeedDelivered );
+    // dataLog.publish( "rotDelivered", rotDelivered );
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_gyro.getAngle()))
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(-m_gyro.getAngle()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -249,6 +254,7 @@ public class DriveSubsystem extends SubsystemBase
     m_rearLeft.resetEncoders();
     m_frontRight.resetEncoders();
     m_rearRight.resetEncoders();
+    m_gyro.reset();
   }
 
   /** Zeroes the heading of the robot. */
