@@ -43,7 +43,7 @@ public class Intake extends SubsystemBase
         m_intakeWheelSparkMax = new CANSparkMax(kIntakeWheelCanID, MotorType.kBrushless);
 
         m_intakeWheelEncoder = m_intakeWheelSparkMax.getEncoder();
-        m_intakeWheelEncoder.setPositionConversionFactor( 1.0 / 3.0 );
+        m_intakeWheelEncoder.setPositionConversionFactor( 1.0 );
         m_intakeWheelEncoder.setPosition( 0.0 );
         
         m_intakePIDController = m_intakeWheelSparkMax.getPIDController();
