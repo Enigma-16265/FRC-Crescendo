@@ -2,6 +2,9 @@
   "NetworkTables": {
     "transitory": {
       "Subsystems": {
+        "DriveSubsystem": {
+          "open": true
+        },
         "MAXSwerveModule_5_11": {
           "open": true
         },
@@ -24,9 +27,6 @@
       "plots": [
         {
           "axis": [
-            {
-              "autoFit": true
-            },
             {
               "autoFit": true
             }
@@ -57,6 +57,15 @@
               ],
               "id": "NT:Subsystems/MAXSwerveModule_5_11/optimizedDesiredState.speed_mps",
               "yAxis": 1
+            },
+            {
+              "color": [
+                0.3333333432674408,
+                0.658823549747467,
+                0.4078431725502014,
+                1.0
+              ],
+              "id": "NT:Subsystems/MAXSwerveModule_5_11/desiredState.speed_mps"
             }
           ],
           "viewTime": 20.0,

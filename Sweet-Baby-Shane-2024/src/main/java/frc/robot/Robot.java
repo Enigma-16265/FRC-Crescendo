@@ -72,7 +72,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.subSystemReset();
 
-    //m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
