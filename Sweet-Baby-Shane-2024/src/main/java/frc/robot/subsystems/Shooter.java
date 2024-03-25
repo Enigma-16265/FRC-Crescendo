@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase
         m_shooterFlywheelLeftSparkFlex.follow(m_shooterFlywheelRightSparkFlex, true);
 
         m_shooterFlywheelEncoder = m_shooterFlywheelRightSparkFlex.getEncoder();
-        m_shooterFlywheelEncoder.setPositionConversionFactor( 1.0 / 36.0 );
+        m_shooterFlywheelEncoder.setPositionConversionFactor( 1.0 );
         m_shooterFlywheelEncoder.setPosition( 0.0 );
         
         m_shooterFlywheelPIDController = m_shooterFlywheelRightSparkFlex.getPIDController();
@@ -91,6 +91,13 @@ public class Shooter extends SubsystemBase
 
             m_shooterFlywheelPIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
         }
+
+    }
+
+    public void stop(){
+
+        m_shooterFlywheelLeftSparkFlex.set( 0.0 );
+        m_shooterFlywheelRightSparkFlex.set( 0.0 );
 
     }
 

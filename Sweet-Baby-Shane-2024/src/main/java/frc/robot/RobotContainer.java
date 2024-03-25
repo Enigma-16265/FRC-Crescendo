@@ -23,6 +23,7 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakePivotHomingCommand;
 import frc.robot.commands.IntakePivotCommand;
+import frc.robot.commands.AutonomousCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorHomingCommand;
 import frc.robot.commands.ShooterPivotCommand;
@@ -240,25 +241,29 @@ public class RobotContainer {
 
     // // Run path following command, then stop at the end.
     // //return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
-    return new SequentialCommandGroup(new ShooterCommand(shooter, () -> {
+    // return new SequentialCommandGroup(new ShooterCommand(shooter, () -> {
 
-          double speed = 1;
-          return speed;
+    //       double speed = 1;
+    //       return speed;
 
-        }).withTimeout(1.5),new ShooterCommand(shooter, () -> {
+    //     }).withTimeout(1.5),new ShooterCommand(shooter, () -> {
 
-          double speed = 1;
-          return speed;
+    //       double speed = 1;
+    //       return speed;
 
-        }).alongWith(new IntakeCommand(intake, () -> {
-          return (1.0 );
-        }, intakePivot)).withTimeout(4.5), new RunCommand(
-              () -> m_robotDrive.drive(
-                  0.3,
-                  -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                  -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                  false, true),
-              m_robotDrive));
+    //     }).alongWith(new IntakeCommand(intake, () -> {
+    //       return (1.0 );
+    //     }, intakePivot)).withTimeout(4.5), new RunCommand(
+    //           () -> m_robotDrive.drive(
+    //               0.3,
+    //               -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+    //               -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+    //               false, true),
+    //           m_robotDrive));
+
+
+    Command autonomousCommand = new AutonomousCommand(shooter, intake, m_robotDrive, intakePivot);
+    return autonomousCommand;
   }
 
   public void subSystemReset()
