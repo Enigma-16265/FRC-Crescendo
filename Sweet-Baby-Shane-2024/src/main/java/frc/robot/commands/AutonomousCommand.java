@@ -18,6 +18,11 @@ public class AutonomousCommand extends SequentialCommandGroup {
             // Wait for 1 second before setting intake speed to 1
             new WaitCommand(1).andThen(new IntakeCommand(intake, () -> { double speed = 1.0; return speed; }, intakePivot).withTimeout(1.5)),
 
+            new RunCommand(() -> {
+                shooter.stop(); // Assuming you have a method to stop the shooter
+                intake.stop(); // Assuming you have a method to stop the intake
+            }, shooter, intake),
+
             // Drive backwards for 2 seconds at 0.2 speed
             new RunCommand(() -> driveTrain.drive(-0.2, 0, 0, false, true), driveTrain).withTimeout(2),
 
@@ -25,12 +30,12 @@ public class AutonomousCommand extends SequentialCommandGroup {
             new RunCommand(() -> driveTrain.drive(0, 0, 0, false, true), driveTrain),
 
             // Lower the intake and set intake speed to -0.8 for 0.3 seconds
-            new IntakePivotHomingCommand(intakePivot).andThen(
+            new IntakePivotLimitCommand( intakePivot, IntakePivotLimitCommand.Behavior.GO ).andThen(
                 new IntakeCommand(intake, () -> { double speed = -0.8; return speed; }, intakePivot).withTimeout(0.3)
             ),
 
             // Call the intake to go upwards as shown in the robot container code
-            new IntakePivotHomingCommand(intakePivot),
+            new IntakePivotLimitCommand( intakePivot, IntakePivotLimitCommand.Behavior.STOW ),
 
             // Drive forward for 2 seconds at 0.2 speed
             new RunCommand(() -> driveTrain.drive(0.2, 0, 0, false, true), driveTrain).withTimeout(2),
