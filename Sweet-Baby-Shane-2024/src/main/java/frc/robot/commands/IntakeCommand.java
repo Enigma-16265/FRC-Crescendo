@@ -47,9 +47,8 @@ public class IntakeCommand extends Command
         this.m_intakePivot = intakePivot;
 
             // Initialize the color sensor on I2C port 0 (change as necessary)
-    // colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-    private final I2C.Port i2cPort = I2C.Port.kOnboard;
-    private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
+    colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+    //private final ColorSensorV3 colorSensor = new ColorSensorV3( I2C.Port.kOnboard );
         
     // Color matcher target color
     colorMatcher = new ColorMatch();

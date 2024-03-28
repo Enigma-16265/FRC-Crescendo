@@ -44,8 +44,8 @@ public class Shooter extends SubsystemBase
         // Flywheel
         m_shooterFlywheelRightSparkFlex = new CANSparkFlex(kShooterFlywheelRightCanID, MotorType.kBrushless);
         m_shooterFlywheelLeftSparkFlex = new CANSparkFlex(kShooterFlywheelLeftCanID, MotorType.kBrushless);
-        m_shooterFlywheelRightSparkFlex.setIdleMode( IdleMode.kCoast );
-        m_shooterFlywheelLeftSparkFlex.setIdleMode( IdleMode.kCoast );
+        m_shooterFlywheelRightSparkFlex.setIdleMode( IdleMode.kBrake );
+        m_shooterFlywheelLeftSparkFlex.setIdleMode( IdleMode.kBrake );
 
         m_shooterFlywheelLeftSparkFlex.follow(m_shooterFlywheelRightSparkFlex, true);
 

@@ -18,14 +18,17 @@ public class ElevatorCommand extends Command
         Map.of( "requestSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "commandSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
 
-    private static final double kLiftSlewRateLimit = 0.1;
+    private static final double kLiftSlewRateLimit = 0.5;
+    // private static final double kLowerSlewRateLimit = 0.5;
 
     private final Elevator          m_elevator;
     private final Supplier<Double>  m_speedSupplier;
-    private final SlewRateLimiter   m_slewRateLimiter = new SlewRateLimiter( kLiftSlewRateLimit );
+    private final SlewRateLimiter   m_liftSlewRateLimiter = new SlewRateLimiter( kLiftSlewRateLimit );
+    // private final SlewRateLimiter   m_lowerSlewRateLimiter = new SlewRateLimiter( kLowerSlewRateLimit );
+
 
     //Constants
-    public final int kSpeedAccelerationLimit = 1;
+    public final double kSpeedAccelerationLimit = 0.8;
 
     public ElevatorCommand(
         Elevator         elevator,
@@ -47,7 +50,7 @@ public class ElevatorCommand extends Command
         double requestSpeed = m_speedSupplier.get();
         if ( requestSpeed == 0.0 )
         {
-            m_slewRateLimiter.reset( 0.0 );
+            m_liftSlewRateLimiter.reset( 0.0 );
         }
 
         boolean positiveDirection = false;
@@ -56,7 +59,7 @@ public class ElevatorCommand extends Command
             positiveDirection = true;
         }
 
-        double commandSpeed = m_slewRateLimiter.calculate( requestSpeed );
+        double commandSpeed = m_liftSlewRateLimiter.calculate( requestSpeed );
 
         // dataLog.publish( "requestSpeed", requestSpeed );
         // dataLog.publish( "commandSpeed", commandSpeed );
