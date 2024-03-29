@@ -12,11 +12,13 @@ import frc.robot.subsystems.Elevator;
 public class ElevatorCommand extends Command
 {
 
+    /*
     private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
         "Subsystems.ElevatorLift.DefaultCommand",
         Map.of( "requestSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "commandSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+    */
 
     private static final double kLiftSlewRateLimit = 0.1;
 

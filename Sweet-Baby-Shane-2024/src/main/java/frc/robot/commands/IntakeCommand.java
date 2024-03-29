@@ -18,10 +18,12 @@ import edu.wpi.first.wpilibj.I2C;
 
 public class IntakeCommand extends Command 
 {
+    /*
     private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
         "Subsystems.Intake.DefaultCommand",
         Map.of( "color", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
+    */
     
     // Color Commands
     private final ColorSensorV3 colorSensor;
@@ -125,7 +127,7 @@ public class IntakeCommand extends Command
         if (colorMatched)
         {
 
-            System.out.println("Detected Orange");
+            // System.out.println("Detected Orange");
             Command sensorIntakePivot = new IntakePivotLimitCommand( m_intakePivot, IntakePivotLimitCommand.Behavior.STOW );
             sensorIntakePivot.schedule();
         }

@@ -46,17 +46,18 @@ public class MAXSwerveModule
   public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset)
   {
 
+    
     m_dataLog =
       new DataNetworkTableLog( 
         String.format("Subsystems.MAXSwerveModule_%d_%d", drivingCANId, turningCANId ),
-        Map.of( "desiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+        Map.of( /*"desiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "desiredState.speed_mps", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "correctedDesiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "correctedDesiredState.speed_mps", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "optimizedDesiredState.speed_mps", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "optimizedDesiredState.angle_deg", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "appliedOutput", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "current", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+                "current", DataNetworkTableLog.COLUMN_TYPE.DOUBLE */) );
 
     m_drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
     m_turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);

@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class DriveSubsystem extends SubsystemBase
 {
 
+  /*
   private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
         "Subsystems.DriveSubsystem",
@@ -42,6 +43,7 @@ public class DriveSubsystem extends SubsystemBase
                 "heading",        DataNetworkTableLog.COLUMN_TYPE.DOUBLE
                 // "turnRate",        DataNetworkTableLog.COLUMN_TYPE.DOUBLE
               ) );
+  */
 
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(

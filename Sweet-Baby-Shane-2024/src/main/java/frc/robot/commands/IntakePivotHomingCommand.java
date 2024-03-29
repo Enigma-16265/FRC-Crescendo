@@ -23,7 +23,6 @@ public class IntakePivotHomingCommand extends Command
     @Override
     public void execute()
     {
-        System.out.println( "IntakeHomingCommand execute!!!!!!!!!!!!!" );
         m_intake.home( kDriveDownSpeed );
     }
 

@@ -19,6 +19,7 @@ import frc.logging.DataNetworkTableLog;
 public class ShooterPivot extends SubsystemBase
 {
     
+    /*
     private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
         "Subsystems.ShooterPivot",
@@ -31,6 +32,7 @@ public class ShooterPivot extends SubsystemBase
                 "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "simEncoderPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "homeMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
+    */
 
     // Can IDs
     public static final int kShooterPivotCanID = 12;

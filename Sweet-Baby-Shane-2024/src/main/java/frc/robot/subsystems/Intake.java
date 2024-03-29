@@ -13,11 +13,13 @@ import frc.logging.DataNetworkTableLog;
 
 public class Intake extends SubsystemBase
 {
+    /*
     private static final DataNetworkTableLog dataLog =
         new DataNetworkTableLog( 
             "Subsystems.Intake",
             Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                     "holdPosition", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+    */
 
     // Can IDs
     public static final int kIntakeWheelCanID = 15;

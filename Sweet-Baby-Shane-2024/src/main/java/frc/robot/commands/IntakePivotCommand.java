@@ -10,12 +10,13 @@ import frc.robot.subsystems.IntakePivot;
 
 public class IntakePivotCommand extends Command
 {
-
+    /*
     private static final DataNetworkTableLog dataLog =
         new DataNetworkTableLog( 
             "Subsystems.IntakePivot.DefaultCommand",
             Map.of( "requestSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                     "commandSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+    */
 
     private static final double kLiftSlewRateLimit = 0.1;
 

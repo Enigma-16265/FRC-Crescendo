@@ -15,6 +15,7 @@ import frc.logging.DataNetworkTableLog;
 
 public class IntakePivot extends SubsystemBase
 {
+    /*
     private static final DataNetworkTableLog dataLog =
         new DataNetworkTableLog( 
             "Subsystems.IntakePivot",
@@ -27,6 +28,7 @@ public class IntakePivot extends SubsystemBase
                     "setPointPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                     "simEncoderPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                     "homeMode", DataNetworkTableLog.COLUMN_TYPE.STRING ) );
+    */
 
     // Can IDs
     public static final int kIntakePivotCanID = 16;

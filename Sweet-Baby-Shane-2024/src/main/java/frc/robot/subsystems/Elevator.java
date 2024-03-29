@@ -17,6 +17,7 @@ import com.revrobotics.SparkPIDController;
 public class Elevator extends SubsystemBase
 {
 
+    /*
     private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
         "Subsystems.ElevatorLift",
@@ -30,6 +31,7 @@ public class Elevator extends SubsystemBase
                 "simEncoderPos", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "homeMode", DataNetworkTableLog.COLUMN_TYPE.STRING,
                 "upperLimitNudges", DataNetworkTableLog.COLUMN_TYPE.INTEGER ) );
+    */
 
     // Can ID
     public static final int kElevatorRightCanID = 10;

@@ -14,11 +14,13 @@ import frc.logging.DataNetworkTableLog;
 
 public class Shooter extends SubsystemBase
 {
+    /*
     private static final DataNetworkTableLog dataLog =
     new DataNetworkTableLog( 
         "Subsystems.Shooter",
         Map.of( "speed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
                 "holdPosition", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+    */
 
     // Can IDs
     public static final int kShooterFlywheelRightCanID = 14;
