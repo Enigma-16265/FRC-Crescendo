@@ -63,7 +63,7 @@ public class Intake extends SubsystemBase
 
         if ( speed != 0.0 )
         {
-            dataLog.publish( "speed", speed );
+            // dataLog.publish( "speed", speed );
 
             m_intakePIDController.setReference( speed, CANSparkMax.ControlType.kDutyCycle );
 
@@ -82,7 +82,7 @@ public class Intake extends SubsystemBase
                 // dataLog.publish( "holdPosition", holdPosition );
             }
 
-            dataLog.publish( "speed", speed );
+            // dataLog.publish( "speed", speed );
 
             m_intakePIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
         }
@@ -91,7 +91,7 @@ public class Intake extends SubsystemBase
 
     public void stop(){
 
-        dataLog.publish( "speed", 0.0 );
+        // dataLog.publish( "speed", 0.0 );
         m_intakeWheelSparkMax.set( 0 );
 
     }

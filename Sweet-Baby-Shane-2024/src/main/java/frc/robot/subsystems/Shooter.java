@@ -70,7 +70,7 @@ public class Shooter extends SubsystemBase
 
         if ( speed != 0.0 )
         {
-            dataLog.publish( "speed", speed );
+            // dataLog.publish( "speed", speed );
 
             m_shooterFlywheelPIDController.setReference( speed, CANSparkMax.ControlType.kDutyCycle );
 
@@ -89,7 +89,7 @@ public class Shooter extends SubsystemBase
                 // dataLog.publish( "holdPosition", holdPosition );
             }
 
-            dataLog.publish( "speed", speed );
+            // dataLog.publish( "speed", speed );
 
             m_shooterFlywheelPIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
         }
@@ -98,7 +98,7 @@ public class Shooter extends SubsystemBase
 
     public void stop(){
 
-        dataLog.publish( "speed", 0.0 );
+        // dataLog.publish( "speed", 0.0 );
 
         m_shooterFlywheelLeftSparkFlex.set( 0 );
         m_shooterFlywheelRightSparkFlex.set( 0 );

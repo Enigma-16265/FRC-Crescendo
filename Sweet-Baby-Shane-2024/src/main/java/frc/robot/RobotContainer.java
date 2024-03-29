@@ -63,7 +63,7 @@ public class RobotContainer {
     XboxController m_driverController   = new XboxController(OIConstants.kDriverControllerPort);
     XboxController m_mechanicController = new XboxController(OIConstants.kMechanicControllerPort);
 
-    static final boolean enableDriveTrain = false;
+    static final boolean enableDriveTrain = true;
 
     // Subsystems
     private final Elevator     elevator     = new Elevator();
