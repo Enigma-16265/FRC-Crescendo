@@ -174,9 +174,9 @@ public final class Constants {
   }
 
   public static final class CameraSettings {
-    public static final int kCameraLength = 160;
-    public static final int kCameraHeight = 90;
-    public static final int kCameraFPS = 10;
+    public static final int kCameraLength = 80;
+    public static final int kCameraHeight = 45;
+    public static final int kCameraFPS = 5;
 
   }
 }

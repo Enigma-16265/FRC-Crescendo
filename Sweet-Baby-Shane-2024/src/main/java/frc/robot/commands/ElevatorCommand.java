@@ -20,7 +20,7 @@ public class ElevatorCommand extends Command
                 "commandSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
     */
 
-    private static final double kLiftSlewRateLimit = 0.1;
+    private static final double kLiftSlewRateLimit = 0.3;
 
     private final Elevator          m_elevator;
     private final Supplier<Double>  m_speedSupplier;

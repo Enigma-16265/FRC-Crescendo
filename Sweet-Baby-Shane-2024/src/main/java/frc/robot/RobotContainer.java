@@ -254,7 +254,7 @@ public class RobotContainer {
       return (1.0 );
     }, intakePivot)).withTimeout(4.5), new RunCommand(
           () -> m_robotDrive.drive(
-              0.3,
+              0.0,
               -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
               -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
               false, true),

@@ -26,16 +26,16 @@ public class IntakeCommand extends Command
     */
     
     // Color Commands
-    private final ColorSensorV3 colorSensor;
-    private final ColorMatch colorMatcher;
+    // private final ColorSensorV3 colorSensor;
+    // private final ColorMatch colorMatcher;
 
     private static final double kRollInSlewRateLimit = 0.3;
     private static final double kRollOutSlewRateLimit = 1;
 
     private final Intake m_intake;
     private final Supplier<Double> m_speedSupplier;
-    private final SlewRateLimiter  m_inSlewRateLimiter = new SlewRateLimiter( kRollInSlewRateLimit );
-    private final SlewRateLimiter  m_outSlewRateLimiter = new SlewRateLimiter( kRollOutSlewRateLimit );
+    // private final SlewRateLimiter  m_inSlewRateLimiter = new SlewRateLimiter( kRollInSlewRateLimit );
+    // private final SlewRateLimiter  m_outSlewRateLimiter = new SlewRateLimiter( kRollOutSlewRateLimit );
 
     private final IntakePivot m_intakePivot;
 
@@ -49,11 +49,11 @@ public class IntakeCommand extends Command
         this.m_intakePivot = intakePivot;
 
             // Initialize the color sensor on I2C port 0 (change as necessary)
-    colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+    // colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         
     // Color matcher target color
-    colorMatcher = new ColorMatch();
-    colorMatcher.addColorMatch(Color.kOrange);
+    // colorMatcher = new ColorMatch();
+    // colorMatcher.addColorMatch(Color.kOrange);
 
         addRequirements(intake);
     }
@@ -83,13 +83,13 @@ public class IntakeCommand extends Command
         }
         else
         {
-            m_outSlewRateLimiter.reset( 0.0 );
-            m_inSlewRateLimiter.reset( 0.0 );
+            // m_outSlewRateLimiter.reset( 0.0 );
+            // m_inSlewRateLimiter.reset( 0.0 );
         }
 
         m_intake.roll( commandSpeed );
 
-        colorSensor();
+        // colorSensor();
     }
 
     @Override
@@ -105,16 +105,16 @@ public class IntakeCommand extends Command
     {
 
         // System.out.println("Color Sensor");
-        Color detectedColor = colorSensor.getColor();
+        // Color detectedColor = colorSensor.getColor();
         // dataLog.publish( "color",rgbToHex(detectedColor.red, detectedColor.green, detectedColor.blue) );
             
         // Perform color matching
-        ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
+        // ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
 
         // Execute command if orange is detected
-        boolean colorMatched = (match.color == Color.kOrange);
+        // boolean colorMatched = (match.color == Color.kOrange);
 
-        if ( Robot.isSimulation() )
+        /*if ( Robot.isSimulation() )
         {
             if ( ( simCollects > 3000 ) && ( colorMatched == false ) )
             {
@@ -131,6 +131,7 @@ public class IntakeCommand extends Command
             Command sensorIntakePivot = new IntakePivotLimitCommand( m_intakePivot, IntakePivotLimitCommand.Behavior.STOW );
             sensorIntakePivot.schedule();
         }
+        */
 
     }
 
