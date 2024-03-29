@@ -112,7 +112,7 @@ public class RobotContainer {
         elevator,
         () -> MathUtil.applyDeadband( -m_mechanicController.getLeftY(), OIConstants.kElevatorDeadband )
     );
-    // elevator.setDefaultCommand(elevatorCommand);
+    elevator.setDefaultCommand(elevatorCommand);
 
     intakeCommand = new IntakeCommand( 
         intake,
