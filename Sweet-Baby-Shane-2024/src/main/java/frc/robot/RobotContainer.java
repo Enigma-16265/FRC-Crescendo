@@ -242,23 +242,31 @@ public class RobotContainer {
     // //return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
     return new SequentialCommandGroup(new ShooterCommand(shooter, () -> {
 
-          double speed = 1;
-          return speed;
+      double speed = 1;
+      return speed;
 
-        }).withTimeout(1.5),new ShooterCommand(shooter, () -> {
+    }).withTimeout(1.5),new ShooterCommand(shooter, () -> {
 
-          double speed = 1;
-          return speed;
+      double speed = 1;
+      return speed;
 
-        }).alongWith(new IntakeCommand(intake, () -> {
-          return (1.0 );
-        }, intakePivot)).withTimeout(4.5), new RunCommand(
-              () -> m_robotDrive.drive(
-                  0.3,
-                  -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                  -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                  false, true),
-              m_robotDrive));
+    }).alongWith(new IntakeCommand(intake, () -> {
+      return (1.0 );
+    }, intakePivot)).withTimeout(4.5), new RunCommand(
+          () -> m_robotDrive.drive(
+              0.3,
+              -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+              false, true),
+          m_robotDrive).withTimeout(3.0),
+    
+          new RunCommand(() -> {
+            m_robotDrive.drive(0, 0, 0, false, true);
+            shooter.stop(); // Assuming you have a method to stop the shooter
+            intake.stop(); // Assuming you have a method to stop the intake
+        }, m_robotDrive, shooter, intake) 
+        
+    );
   }
 
   public void subSystemReset()

@@ -149,6 +149,7 @@ public class IntakePivot extends SubsystemBase
                 // dataLog.publish( "setPointPos", m_setPointPos );
             }
 
+            dataLog.publish( "speed", speed );
             m_intakePIDController.setReference( speed, CANSparkMax.ControlType.kDutyCycle );
 
             if ( RobotBase.isSimulation() )
@@ -171,6 +172,7 @@ public class IntakePivot extends SubsystemBase
 
             // For now we will use a zero duty cycle to stop the motor, until we can figure out the
             // PIDController position hold
+            dataLog.publish( "speed", 0.0 );
             m_intakePIDController.setReference( 0.0, CANSparkMax.ControlType.kDutyCycle );
         }
 

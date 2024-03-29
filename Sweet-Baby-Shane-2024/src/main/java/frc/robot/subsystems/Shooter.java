@@ -44,8 +44,8 @@ public class Shooter extends SubsystemBase
         // Flywheel
         m_shooterFlywheelRightSparkFlex = new CANSparkFlex(kShooterFlywheelRightCanID, MotorType.kBrushless);
         m_shooterFlywheelLeftSparkFlex = new CANSparkFlex(kShooterFlywheelLeftCanID, MotorType.kBrushless);
-        m_shooterFlywheelRightSparkFlex.setIdleMode( IdleMode.kCoast );
-        m_shooterFlywheelLeftSparkFlex.setIdleMode( IdleMode.kCoast );
+        m_shooterFlywheelRightSparkFlex.setIdleMode( IdleMode.kBrake );
+        m_shooterFlywheelLeftSparkFlex.setIdleMode( IdleMode.kBrake );
 
         m_shooterFlywheelLeftSparkFlex.follow(m_shooterFlywheelRightSparkFlex, true);
 
@@ -67,11 +67,11 @@ public class Shooter extends SubsystemBase
 
     public void spin( double speed )
     {
-        // dataLog.publish( "speed", speed );
 
         if ( speed != 0.0 )
         {
-            
+            dataLog.publish( "speed", speed );
+
             m_shooterFlywheelPIDController.setReference( speed, CANSparkMax.ControlType.kDutyCycle );
 
             if ( holdPosition >= 0.0 )
@@ -89,8 +89,19 @@ public class Shooter extends SubsystemBase
                 // dataLog.publish( "holdPosition", holdPosition );
             }
 
+            dataLog.publish( "speed", speed );
+
             m_shooterFlywheelPIDController.setReference( holdPosition, CANSparkMax.ControlType.kPosition );
         }
+
+    }
+
+    public void stop(){
+
+        dataLog.publish( "speed", 0.0 );
+
+        m_shooterFlywheelLeftSparkFlex.set( 0 );
+        m_shooterFlywheelRightSparkFlex.set( 0 );
 
     }
 

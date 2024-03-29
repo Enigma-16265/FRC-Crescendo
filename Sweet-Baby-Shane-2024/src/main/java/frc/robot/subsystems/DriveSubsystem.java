@@ -208,9 +208,9 @@ public class DriveSubsystem extends SubsystemBase
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;// * 15;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
-    // dataLog.publish( "xSpeedDelivered", -xSpeedDelivered );
-    // dataLog.publish( "ySpeedDelivered", -ySpeedDelivered );
-    // dataLog.publish( "rotDelivered", rotDelivered );
+    dataLog.publish( "xSpeedDelivered", -xSpeedDelivered );
+    dataLog.publish( "ySpeedDelivered", -ySpeedDelivered );
+    dataLog.publish( "rotDelivered", rotDelivered );
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative

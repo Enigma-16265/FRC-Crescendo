@@ -165,30 +165,30 @@ public class MAXSwerveModule
   public void setDesiredState(SwerveModuleState desiredState)
   {
 
-    m_dataLog.publish( "desiredState.angle_deg", desiredState.angle.getDegrees() );
-    m_dataLog.publish( "desiredState.speed_mps", desiredState.speedMetersPerSecond );
+    // m_dataLog.publish( "desiredState.angle_deg", desiredState.angle.getDegrees() );
+    // m_dataLog.publish( "desiredState.speed_mps", desiredState.speedMetersPerSecond );
 
     // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
     correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
 
-    m_dataLog.publish( "correctedDesiredState.angle_deg", correctedDesiredState.angle.getDegrees() );
-    m_dataLog.publish( "correctedDesiredState.speed_mps", correctedDesiredState.speedMetersPerSecond );
+    // m_dataLog.publish( "correctedDesiredState.angle_deg", correctedDesiredState.angle.getDegrees() );
+    // m_dataLog.publish( "correctedDesiredState.speed_mps", correctedDesiredState.speedMetersPerSecond );
 
     // Optimize the reference state to avoid spinning further than 90 degrees.
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedDesiredState,
         new Rotation2d(m_turningEncoder.getPosition()));
 
-    m_dataLog.publish( "optimizedDesiredState.angle_deg", optimizedDesiredState.angle.getDegrees() );
-    m_dataLog.publish( "optimizedDesiredState.speed_mps", optimizedDesiredState.speedMetersPerSecond );
+    // m_dataLog.publish( "optimizedDesiredState.angle_deg", optimizedDesiredState.angle.getDegrees() );
+    // m_dataLog.publish( "optimizedDesiredState.speed_mps", optimizedDesiredState.speedMetersPerSecond );
 
     // Command driving and turning SPARKS MAX towards their respective setpoints.
     m_drivingPIDController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
     m_turningPIDController.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
 
-    m_dataLog.publish( "appliedOutput", m_drivingSparkMax.getAppliedOutput() );
-    m_dataLog.publish( "current", m_drivingSparkMax.getOutputCurrent() );
+    // m_dataLog.publish( "appliedOutput", m_drivingSparkMax.getAppliedOutput() );
+    // m_dataLog.publish( "current", m_drivingSparkMax.getOutputCurrent() );
 
     m_desiredState = desiredState;
   }
