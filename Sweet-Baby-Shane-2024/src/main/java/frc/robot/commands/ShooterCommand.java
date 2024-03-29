@@ -37,7 +37,9 @@ public class ShooterCommand extends Command
     }
 
     @Override
-    public void end( boolean interrupted ) {}
+    public void end( boolean interrupted )
+    {
+    }
 
     @Override
     public boolean isFinished() {

@@ -92,8 +92,8 @@ public class IntakePivot extends SubsystemBase
 
     public void slew( double speed, boolean positiveDirection )
     {
-        // dataLog.publish( "speed", speed );
-        // dataLog.publish( "posDir", positiveDirection );
+        dataLog.publish( "speed", speed );
+        dataLog.publish( "posDir", positiveDirection );
 
         double  encoderPos        = m_intakePivotEncoder.getPosition() / kCountsPerRev;
         boolean limitSwitchActive = (!m_limitSwitch.get() || (encoderPos >= kEncoderRevUpperLimit) || (encoderPos <= kEncoderRevLowerLimit));
@@ -104,8 +104,8 @@ public class IntakePivot extends SubsystemBase
             limitSwitchActive = !getSimLimitSwitch();
         }
 
-        // dataLog.publish( "encoderPos", encoderPos );
-        // dataLog.publish( "limitSwitch", limitSwitchActive );
+        dataLog.publish( "encoderPos", encoderPos );
+        dataLog.publish( "limitSwitch", limitSwitchActive );
 
         if ( ( speed != 0.0 ) && limitSwitchActive )
         {
@@ -135,7 +135,7 @@ public class IntakePivot extends SubsystemBase
             m_inputMode = InputMode.NOMINAL;
         }
 
-        // dataLog.publish( "inputMode", m_inputMode );
+        dataLog.publish( "inputMode", m_inputMode );
         
         if ( speed != 0.0 )
         {
@@ -145,8 +145,8 @@ public class IntakePivot extends SubsystemBase
                 m_controlMode = ControlMode.ACTIVE;
                 m_setPointPos = 0.0;
 
-                // dataLog.publish( "controlMode", m_controlMode );
-                // dataLog.publish( "setPointPos", m_setPointPos );
+                dataLog.publish( "controlMode", m_controlMode );
+                dataLog.publish( "setPointPos", m_setPointPos );
             }
 
             dataLog.publish( "speed", speed );
@@ -166,8 +166,8 @@ public class IntakePivot extends SubsystemBase
                 m_controlMode = ControlMode.HOLD;
                 m_setPointPos = encoderPos;
 
-                // dataLog.publish( "controlMode", m_controlMode );
-                // dataLog.publish( "setPointPos", m_setPointPos );
+                dataLog.publish( "controlMode", m_controlMode );
+                dataLog.publish( "setPointPos", m_setPointPos );
             }
 
             // For now we will use a zero duty cycle to stop the motor, until we can figure out the

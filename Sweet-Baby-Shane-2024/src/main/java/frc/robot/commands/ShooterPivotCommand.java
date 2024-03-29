@@ -65,7 +65,10 @@ public class ShooterPivotCommand extends Command
     }
 
     @Override
-    public void end( boolean interrupted ) {}
+    public void end( boolean interrupted )
+    {
+        m_shooterPivot.slew( 0.0, true );
+    }
 
     @Override
     public boolean isFinished() {

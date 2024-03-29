@@ -70,7 +70,10 @@ public class IntakePivotLimitCommand  extends Command
     }
 
     @Override
-    public void end( boolean interrupted ) {}
+    public void end( boolean interrupted )
+    {
+        m_intakePivot.slew( 0, true );
+    }
 
     @Override
     public boolean isFinished()
