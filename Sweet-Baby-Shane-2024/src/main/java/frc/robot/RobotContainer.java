@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -252,13 +253,16 @@ public class RobotContainer {
 
     }).alongWith(new IntakeCommand(intake, () -> {
       return (1.0 );
-    }, intakePivot)).withTimeout(4.5), new RunCommand(
-          () -> m_robotDrive.drive(
-              0.3,
-              -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-              true, true),
-          m_robotDrive).withTimeout(3.0),
+    }, intakePivot)).withTimeout(4.5),
+
+    new RunCommand(() -> {
+            shooter.stop(); // Assuming you have a method to stop the shooter
+            intake.stop(); // Assuming you have a method to stop the intake
+        }, m_robotDrive, shooter, intake).withTimeout(0.5),
+
+          new WaitCommand(7),
+    
+          new RunCommand( () -> m_robotDrive.drive(0.3, 0.2, 0.0, true, true), m_robotDrive).withTimeout(3.0),
     
           new RunCommand(() -> {
             m_robotDrive.drive(0, 0, 0, false, true);
