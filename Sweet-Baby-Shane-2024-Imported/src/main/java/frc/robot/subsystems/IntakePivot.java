@@ -2,7 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
-import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -63,26 +64,25 @@ public class IntakePivot extends SubsystemBase
 
     private double m_setPointPos = 0.0;
 
+    public final SparkMaxConfig m_intakePivotSparkMaxConfig;
+
     public IntakePivot()
     {
+
+        m_intakePivotSparkMaxConfig = new SparkMaxConfig();
+        m_intakePivotSparkMaxConfig.idleMode(IdleMode.kBrake);
+        m_intakePivotSparkMaxConfig.inverted(true);
+        m_intakePivotSparkMaxConfig.encoder.positionConversionFactor( kCountsPerRev );
+        m_intakePivotSparkMaxConfig.closedLoop.pid(kP, kI, kD);
+        m_intakePivotSparkMaxConfig.closedLoop.outputRange( -1.0, 1.0 );
+
         // Pivot
         m_intakePivotSparkMax = new SparkMax(kIntakePivotCanID, MotorType.kBrushless);
-        m_intakePivotSparkMax.setIdleMode( IdleMode.kBrake );
-        m_intakePivotSparkMax.setInverted( true );
-
         m_intakePivotEncoder = m_intakePivotSparkMax.getEncoder();
-        m_intakePivotEncoder.setPositionConversionFactor( kCountsPerRev );
+
         m_intakePivotEncoder.setPosition( 0.0 );
-        
-        m_intakePIDController = m_intakePivotSparkMax.getPIDController();
 
-        m_intakePIDController.setFeedbackDevice( m_intakePivotEncoder );
-
-        m_intakePIDController.setP(kP);
-        m_intakePIDController.setI(kI);
-        m_intakePIDController.setD(kD);
-
-        m_intakePIDController.setOutputRange(-1.0, 1.0);
+        m_intakePIDController = m_intakePivotSparkMax.getClosedLoopController();
     }
 
     public InputMode getInputMode()
