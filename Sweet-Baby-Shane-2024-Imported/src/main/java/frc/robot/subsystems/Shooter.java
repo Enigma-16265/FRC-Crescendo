@@ -3,7 +3,8 @@ package frc.robot.subsystems;
 import java.util.Map;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -38,30 +39,30 @@ public class Shooter extends SubsystemBase
 
     private double holdPosition = -1.0;
 
+    public final SparkFlexConfig m_shooterFlywheelRightSparkFlexConfig;
+    public final SparkFlexConfig m_shooterFlywheelLeftSparkFlexConfig;
+
     public Shooter()
     {
 
         // Flywheel
+        m_shooterFlywheelLeftSparkFlexConfig = new SparkFlexConfig();
+        m_shooterFlywheelLeftSparkFlexConfig.idleMode(IdleMode.kBrake);
+        m_shooterFlywheelLeftSparkFlexConfig.follow(kShooterFlywheelRightCanID);
+
+        m_shooterFlywheelRightSparkFlexConfig = new SparkFlexConfig();
+        m_shooterFlywheelRightSparkFlexConfig.idleMode(IdleMode.kBrake);
+        m_shooterFlywheelRightSparkFlexConfig.encoder.positionConversionFactor( 1.0 / 36.0 );
+        m_shooterFlywheelRightSparkFlexConfig.closedLoop.pid(kP, kI, kD);
+        m_shooterFlywheelRightSparkFlexConfig.closedLoop.outputRange( -1.0, 1.0 );
+        
         m_shooterFlywheelRightSparkFlex = new SparkFlex(kShooterFlywheelRightCanID, MotorType.kBrushless);
         m_shooterFlywheelLeftSparkFlex = new SparkFlex(kShooterFlywheelLeftCanID, MotorType.kBrushless);
-        m_shooterFlywheelRightSparkFlex.setIdleMode( IdleMode.kBrake );
-        m_shooterFlywheelLeftSparkFlex.setIdleMode( IdleMode.kBrake );
-
-        m_shooterFlywheelLeftSparkFlex.follow(m_shooterFlywheelRightSparkFlex, true);
 
         m_shooterFlywheelEncoder = m_shooterFlywheelRightSparkFlex.getEncoder();
-        m_shooterFlywheelEncoder.setPositionConversionFactor( 1.0 / 36.0 );
         m_shooterFlywheelEncoder.setPosition( 0.0 );
         
-        m_shooterFlywheelPIDController = m_shooterFlywheelRightSparkFlex.getPIDController();
-
-        m_shooterFlywheelPIDController.setFeedbackDevice( m_shooterFlywheelEncoder );
-
-        m_shooterFlywheelPIDController.setP(kP);
-        m_shooterFlywheelPIDController.setI(kI);
-        m_shooterFlywheelPIDController.setD(kD);
-
-        m_shooterFlywheelPIDController.setOutputRange(-1.0, 1.0);
+        m_shooterFlywheelPIDController = m_shooterFlywheelRightSparkFlex.getClosedLoopController();
 
     }
 
