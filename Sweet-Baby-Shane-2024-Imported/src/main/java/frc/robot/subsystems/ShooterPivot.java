@@ -12,7 +12,8 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.logging.DataNetworkTableLog;
 
@@ -63,26 +64,24 @@ public class ShooterPivot extends SubsystemBase
 
     private double m_setPointPos = 0.0;
 
+    public final SparkFlexConfig m_shooterPivotSparkFlexConfig;
+
     public ShooterPivot()
     {
 
+        m_shooterPivotSparkFlexConfig = new SparkFlexConfig();
+        m_shooterPivotSparkFlexConfig.idleMode( IdleMode.kBrake );
+        m_shooterPivotSparkFlexConfig.encoder.positionConversionFactor( kPositionConversionFactor );
+        m_shooterPivotSparkFlexConfig.closedLoop.pid(kP, kI, kD);
+        m_shooterPivotSparkFlexConfig.closedLoop.outputRange( -1.0, 1.0 );
+
         // Pivot
         m_shooterPivotSparkFlex = new SparkFlex(kShooterPivotCanID, MotorType.kBrushless);
-        m_shooterPivotSparkFlex.setIdleMode( IdleMode.kBrake );
 
         m_shooterPivotEncoder = m_shooterPivotSparkFlex.getEncoder();
-        m_shooterPivotEncoder.setPositionConversionFactor( kPositionConversionFactor );
         m_shooterPivotEncoder.setPosition( 0.0 );
         
-        m_shooterPivotPIDController = m_shooterPivotSparkFlex.getPIDController();
-
-        m_shooterPivotPIDController.setFeedbackDevice( m_shooterPivotEncoder );
-
-        m_shooterPivotPIDController.setP(kP);
-        m_shooterPivotPIDController.setI(kI);
-        m_shooterPivotPIDController.setD(kD);
-
-        m_shooterPivotPIDController.setOutputRange(-1.0, 1.0);
+        m_shooterPivotPIDController = m_shooterPivotSparkFlex.getClosedLoopController();
     }
 
     public InputMode getInputMode()
