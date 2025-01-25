@@ -72,7 +72,7 @@ public class RobotContainer {
     private final ShooterPivot shooterPivot = new ShooterPivot();
 
     // Commands
-    private final ElevatorCommand     elevatorCommand;
+    // private final ElevatorCommand     elevatorCommand;
     private final IntakeCommand       intakeCommand;
     private final IntakePivotCommand  intakePivotCommand;
     private final ShooterCommand      shooterCommand;
@@ -107,11 +107,11 @@ public class RobotContainer {
               m_robotDrive));
     }
             
-    elevatorCommand = new ElevatorCommand(
-        elevator,
-        () -> MathUtil.applyDeadband( -m_mechanicController.getLeftY(), OIConstants.kElevatorDeadband )
-    );
-    elevator.setDefaultCommand(elevatorCommand);
+    // elevatorCommand = new ElevatorCommand(
+    //     elevator,
+    //     () -> MathUtil.applyDeadband( -m_mechanicController.getLeftY(), OIConstants.kElevatorDeadband )
+    // );
+    // \elevator.setDefaultCommand(elevatorCommand);
 
     intakeCommand = new IntakeCommand( 
         intake,
