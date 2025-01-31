@@ -16,30 +16,34 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.I2C;
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import frc.logging.DataNetworkTableLog;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.Map;
 
-public class DriveSubsystem extends SubsystemBase 
-{
+public class DriveSubsystem extends SubsystemBase {
 
-  private static final DataNetworkTableLog dataLog =
-    new DataNetworkTableLog( 
-        "Subsystems.DriveSubsystem",
-        Map.of( "xSpeed",          DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "ySpeed",          DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "rot",             DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "xSpeedCommanded", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "ySpeedCommanded", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "currentRotation", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "xSpeedDelivered", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "ySpeedDelivered", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
-                "rotDelivered",    DataNetworkTableLog.COLUMN_TYPE.DOUBLE ) );
+  private static final DataNetworkTableLog dataLog = new DataNetworkTableLog(
+      "Subsystems.DriveSubsystem",
+      Map.of("xSpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+          "ySpeed", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+          "rot", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+          "xSpeedCommanded", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+          "ySpeedCommanded", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+          "currentRotation", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+          "xSpeedDelivered", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+          "ySpeedDelivered", DataNetworkTableLog.COLUMN_TYPE.DOUBLE,
+          "rotDelivered", DataNetworkTableLog.COLUMN_TYPE.DOUBLE));
 
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
@@ -62,8 +66,10 @@ public class DriveSubsystem extends SubsystemBase
       DriveConstants.kRearRightTurningCanId,
       DriveConstants.kBackRightChassisAngularOffset);
 
+  ChassisSpeeds m_chassisSpeeds;
+
   // The gyro sensor
-  private final AHRS m_gyro = new AHRS( I2C.Port.kMXP );
+  private final AHRS m_gyro = new AHRS(I2C.Port.kMXP);
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -80,6 +86,45 @@ public class DriveSubsystem extends SubsystemBase
   public DriveSubsystem() {
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
+
+    RobotConfig config;
+    
+    try {
+      config = RobotConfig.fromGUISettings();
+
+      // Configure AutoBuilder last
+      AutoBuilder.configure(
+          this::getPose, // Robot pose supplier
+          this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+          this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          (speeds, feedforwards) -> drive(speeds), // Method that will drive the robot given ROBOT RELATIVE
+                                                   // ChassisSpeeds. Also optionally outputs individual module
+                                                   // feedforwards
+          new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
+                                          // holonomic drive trains
+              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+          ),
+          config, // The robot configuration
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red
+            // alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+          },
+          this // Reference to this subsystem to set requirements
+      );
+
+    }
+    
+    catch (Exception e) { e.printStackTrace(); }
+
   }
 
   @Override
@@ -130,11 +175,10 @@ public class DriveSubsystem extends SubsystemBase
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative)
-  {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // dataLog.publish( "xSpeed", xSpeed );
     // dataLog.publish( "ySpeed", ySpeed );
-    // dataLog.publish( "rot",    rot );
+    // dataLog.publish( "rot", rot );
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
@@ -143,17 +187,28 @@ public class DriveSubsystem extends SubsystemBase
     // dataLog.publish( "ySpeedDelivered", ySpeedDelivered );
     // dataLog.publish( "rotDelivered", rotDelivered );
 
-    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-        fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                Rotation2d.fromDegrees(m_gyro.getAngle()))
-            : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
+    ChassisSpeeds chassisSpeeds = fieldRelative
+        ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
+            Rotation2d.fromDegrees(m_gyro.getAngle()))
+        : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered);
+
+    drive(chassisSpeeds);
+
+  }
+
+  public void drive(ChassisSpeeds chassisSpeeds) {
+
+    m_chassisSpeeds = chassisSpeeds;
+
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds);
+
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+
   }
 
   /**
@@ -192,6 +247,12 @@ public class DriveSubsystem extends SubsystemBase
   public void zeroHeading() {
     m_gyro.reset();
   }
+
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+
+    return m_chassisSpeeds;
+
+  };
 
   /**
    * Returns the heading of the robot.
