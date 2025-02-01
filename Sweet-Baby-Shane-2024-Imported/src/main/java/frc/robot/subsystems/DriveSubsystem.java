@@ -66,7 +66,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kRearRightTurningCanId,
       DriveConstants.kBackRightChassisAngularOffset);
 
-  ChassisSpeeds m_chassisSpeeds;
+  ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(I2C.Port.kMXP);
